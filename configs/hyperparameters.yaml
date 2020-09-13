@@ -1,0 +1,8 @@
+HSA_model:
+  modality_indices:
+    opp: [0, 9, 18, 27, 36, 45, 61, 77]
+    mex: [0, 3, 6]
+  dff: 512
+  d_model: 64
+  num_heads: 4
+  dropout: 0.2
