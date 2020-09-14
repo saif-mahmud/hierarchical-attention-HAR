@@ -9,6 +9,9 @@ import sys
 
 def get_dataset(url: str, data_directory: str, file_name: str, unzip=True):
 
+    if not os.path.exists('data/'):
+        os.mkdir('data/')
+
     print(datetime.datetime.fromtimestamp(
         time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 
