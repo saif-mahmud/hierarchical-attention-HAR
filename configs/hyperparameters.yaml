@@ -6,3 +6,8 @@ HSA_model:
   d_model: 64
   num_heads: 4
   dropout: 0.2
+
+train:
+  batch_size: 64
+  epochs: 100
+  val_split: 0.1
