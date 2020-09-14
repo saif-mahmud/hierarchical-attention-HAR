@@ -1,0 +1,37 @@
+import os
+import requests
+import zipfile
+import datetime
+import time
+
+
+def get_dataset(url: str, data_directory: str, file_name: str, unzip=True):
+
+    print(datetime.datetime.fromtimestamp(
+        time.time()).strftime('%Y-%m-%d %H:%M:%S'))
+
+    if not os.path.exists(data_directory):
+        os.makedirs(data_directory)
+
+    if not os.path.exists(os.path.join(data_directory, file_name)):
+        print(f'GETTING DATASET {file_name} ...')
+
+        response = requests.get(url, stream=True)
+        data_file = open(os.path.join(data_directory, file_name), 'wb')
+
+        for chunk in response.iter_content(chunk_size=1024):
+            data_file.write(chunk)
+
+        data_file.close()
+
+        if unzip == True:
+            print(f'Unzipping {file_name}')
+            with zipfile.ZipFile(os.path.join(data_directory, file_name), 'r') as zip_ref:
+                zip_ref.extractall(os.path.join(
+                    data_directory, file_name.split('.')[0]))
+                os.remove(os.path.join(data_directory, file_name))
+
+        print('\n---DATASET DOWNLOAD COMPLETE---')
+
+    else:
+        print(f'Requested dataset exists in {data_directory}')
