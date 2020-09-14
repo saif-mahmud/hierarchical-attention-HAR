@@ -3,6 +3,8 @@ import requests
 import zipfile
 import datetime
 import time
+import yaml
+import sys
 
 
 def get_dataset(url: str, data_directory: str, file_name: str, unzip=True):
@@ -14,7 +16,7 @@ def get_dataset(url: str, data_directory: str, file_name: str, unzip=True):
         os.makedirs(data_directory)
 
     if not os.path.exists(os.path.join(data_directory, file_name)):
-        print(f'GETTING DATASET {file_name} ...')
+        print(f'GETTING DATASET [{file_name}] ...')
 
         response = requests.get(url, stream=True)
         data_file = open(os.path.join(data_directory, file_name), 'wb')
@@ -25,7 +27,7 @@ def get_dataset(url: str, data_directory: str, file_name: str, unzip=True):
         data_file.close()
 
         if unzip == True:
-            print(f'Unzipping {file_name}')
+            print(f'Unzipping [{file_name}] ...')
             with zipfile.ZipFile(os.path.join(data_directory, file_name), 'r') as zip_ref:
                 zip_ref.extractall(os.path.join(
                     data_directory, file_name.split('.')[0]))
@@ -35,3 +37,13 @@ def get_dataset(url: str, data_directory: str, file_name: str, unzip=True):
 
     else:
         print(f'Requested dataset exists in {data_directory}')
+
+
+if __name__ == "__main__":
+    config_file = open('configs/metadata.yaml', mode='r')
+    config = yaml.load(config_file, Loader=yaml.FullLoader)
+
+    dataset = str(sys.argv[1]) 
+
+    get_dataset(url=config['data_src'][dataset], data_directory=config['data_dir']
+                ['raw'], file_name=config['data_dest'][dataset])

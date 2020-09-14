@@ -1,0 +1,17 @@
+data_dir:
+  raw: data/raw
+  processed: data/processed
+
+data_src:
+  mex: https://archive.ics.uci.edu/ml/machine-learning-databases/00500/data.zip
+  opp: https://archive.ics.uci.edu/ml/machine-learning-databases/00226/OpportunityUCIDataset.zip
+  pamap2: https://archive.ics.uci.edu/ml/machine-learning-databases/00231/PAMAP2_Dataset.zip
+  realdisp: https://archive.ics.uci.edu/ml/machine-learning-databases/00305/realistic_sensor_displacement.zip
+  mhealth: https://archive.ics.uci.edu/ml/machine-learning-databases/00319/MHEALTHDATASET.zip
+
+data_dest:
+  mex: mex.zip
+  opp: opp.zip
+  pamap2: pamap2.zip
+  realdisp: realdisp.zip
+  mhealth: mhealth.zip
