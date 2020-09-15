@@ -11,3 +11,4 @@ train:
   batch_size: 64
   epochs: 100
   val_split: 0.1
+  learning_rate: 0.001
