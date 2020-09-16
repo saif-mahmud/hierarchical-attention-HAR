@@ -14,7 +14,7 @@ def train_model(dataset):
 
     n_window, n_timesteps, n_features, n_outputs = X_train.shape[1], X_train.shape[2], X_train.shape[3], y_train.shape[1]
 
-    hsa_model = HSA_model(hyperparameters['HSA_model']['modality_indices']['opp'], n_window, n_timesteps, n_features, n_outputs, d_model=hyperparameters['HSA_model']['d_model'], num_heads = hyperparameters['HSA_model']['num_heads'], dff=hyperparameters['HSA_model']['dff'], dropout_rate=hyperparameters['HSA_model']['dropout'])
+    hsa_model = HSA_model(hyperparameters['HSA_model']['modality_indices'][dataset], n_window, n_timesteps, n_features, n_outputs, d_model=hyperparameters['HSA_model']['d_model'], num_heads = hyperparameters['HSA_model']['num_heads'], dff=hyperparameters['HSA_model']['dff'], dropout_rate=hyperparameters['HSA_model']['dropout'])
 
     model = hsa_model.get_model()
 
