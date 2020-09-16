@@ -35,3 +35,17 @@ opp_preprocess:
   hi_label_to_id: {'0': 0, '101': 1, '102': 2, '103': 3, '104': 4, '105': 5}
   loco_label_to_id: {'0': 0, '1': 1, '2': 2, '4': 3, '5': 4}
   mid_label_to_id: {'0': 0, '406516': 1, '406517': 2, '404516': 3, '404517': 4, '406520': 5, '404520': 6, '406505': 7, '404505': 8, '406519': 9, '404519': 10, '406511': 11, '404511': 12, '406508': 13, '404508': 14, '408512': 15, '407521': 16, '405506': 17}
+
+
+mhealth_preprocess:
+    columns_list: ['acc_chest_X', 'acc_chest_Y', 'acc_chest_Z','ecg_1', 'ecg_2','acc_la_X', 'acc_la_Y', 'acc_la_Z',
+           'gyr_la_X', 'gyr_la_Y', 'gyr_la_Z','mag_la_X', 'mag_la_Y', 'mag_la_Z','acc_RLA_X', 'acc_RLA_Y', 'acc_RLA_Z',
+           'gyr_RLA_X', 'gyr_RLA_Y', 'gyr_RLA_Z','mag_RLA_X', 'mag_RLA_Y', 'mag_RLA_Z', 'label']
+    feature_list: ['acc_chest_X', 'acc_chest_Y', 'acc_chest_Z','acc_la_X', 'acc_la_Y', 'acc_la_Z',
+           'gyr_la_X', 'gyr_la_Y', 'gyr_la_Z','mag_la_X', 'mag_la_Y', 'mag_la_Z',
+           'acc_RLA_X', 'acc_RLA_Y', 'acc_RLA_Z','gyr_RLA_X', 'gyr_RLA_Y', 'gyr_RLA_Z',
+           'mag_RLA_X', 'mag_RLA_Y', 'mag_RLA_Z']
+    sliding_win_len: 750
+    sliding_win_stride: 150
+    n_window: 15
+    n_timestep: 50
