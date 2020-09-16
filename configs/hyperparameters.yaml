@@ -2,6 +2,8 @@ HSA_model:
   modality_indices:
     opp: [0, 9, 18, 27, 36, 45, 61, 77]
     mex: [0, 3, 6]
+    mhealth: [0,3,12,21]
+    pamap2: [0, 6, 12, 18]
   dff: 512
   d_model: 64
   num_heads: 4
@@ -12,3 +14,6 @@ train:
   epochs: 10
   val_split: 0.1
   learning_rate: 0.001
+
+test:
+  batch_size: 64
