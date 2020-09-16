@@ -56,5 +56,5 @@ def get_realdisp_data():
     idx = merged_df[(merged_df['TIME_SECOND'] == 0.0) & (merged_df['TIME_MICROSECOND'] == 0.0)].index
     merged_df = merged_df.drop(idx, inplace=False).reset_index(drop=True)
     
-    merged_df.to_csv('../data/processed/clean_realdisp_data.csv', index=False)
+    merged_df.to_csv('data/processed/clean_realdisp_data.csv', index=False)
     return merged_df

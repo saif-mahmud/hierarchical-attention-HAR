@@ -2,8 +2,8 @@ from preprocessing.opp_preprocess import *
 from preprocessing.mhealth_preprocess import *
 from preprocessing.pamap2_preprocess import *
 from preprocessing.sliding_window import *
-from preprocessing.mex_preprocessing import get_mex_data
-from preprocessing.realdisp_preprocessing import get_realdisp_data
+from preprocessing.mex_preprocess import get_mex_data
+from preprocessing.realdisp_preprocess import get_realdisp_data
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import numpy as np
