@@ -42,9 +42,9 @@ def run_loso_experiment(dataset: str, df: pd.DataFrame, activity_map: dict, sub_
         test_df = df[df['SUBJECT'].isin(test_sub)]
 
         X_train, y_train = create_windowed_dataset(
-            train_df, FEATURES, window_size=WINDOW_SIZE, stride=STRIDE)
+            train_df, FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride=STRIDE)
         X_test, y_test = create_windowed_dataset(
-            test_df, FEATURES, window_size=WINDOW_SIZE, stride=STRIDE)
+            test_df, FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride=STRIDE)
 
         X_train = X_train.reshape(
             (X_train.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
