@@ -49,3 +49,15 @@ mhealth_preprocess:
     sliding_win_stride: 150
     n_window: 15
     n_timestep: 50
+
+pamap2_preprocess:
+  label_to_id: {'1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5, '7': 6, '9': 7, '10': 8, '11': 9, '12': 10,
+   '13': 11, '16': 12, '17': 13, '18': 14, '19': 15, '20': 16, '24': 17}
+  columns_list: [1, 4, 5, 6, 10, 11, 12, 21, 22, 23, 27, 28, 29, 38, 39, 40, 44, 45, 46]
+  file_list: {'train': ['subject101.dat', 'subject102.dat','subject103.dat','subject104.dat', 'subject105.dat', 'subject107.dat', 'subject108.dat', 'subject109.dat'],
+            'validation': [],
+            'test': ['subject106.dat']}
+  sliding_win_len: 1500
+  sliding_win_stride: 500
+  n_window: 15
+  n_timestep: 100
