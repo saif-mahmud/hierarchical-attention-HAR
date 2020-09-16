@@ -22,6 +22,17 @@ def get_activity(file_name:str):
 
     return activivity
 
+def get_clean_data(df:pd.DataFrame, method='bfill', drop=False):
+    if not drop:
+        clean_df = df.copy().fillna(method=method)
+    else:
+        clean_df = df.copy().dropna()
+    
+    clean_df = clean_df.sort_values(by='timestamp', ignore_index=True)
+    clean_df = clean_df.dropna() # Remove null value in last row
+
+    return clean_df
+
 def get_mex_data():
 
     complete_df = pd.DataFrame()
@@ -58,6 +69,7 @@ def get_mex_data():
             complete_df = pd.concat([complete_df, merged], ignore_index=True)
 
     complete_df = complete_df.sort_values(by='timestamp', ignore_index=True)
+    complete_df = get_clean_data(complete_df)
     complete_df.to_csv('../data/processed/clean_mex_data.csv', index=False)
 
     return complete_df
