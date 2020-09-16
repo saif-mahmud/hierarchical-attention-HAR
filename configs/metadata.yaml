@@ -16,6 +16,17 @@ data_dest:
   realdisp: realdisp.zip
   mhealth: mhealth.zip
 
+mex_preprocess:
+  data_dir: data/processed/clean_mex_data.csv
+  FEATURES: ['act_x', 'act_y', 'act_z','acw_x', 'acw_y', 'acw_z']
+  FEATURES_THIGH: ['act_x', 'act_y', 'act_z']
+  FEATURES_WRIST: ['acw_x', 'acw_y', 'acw_z']
+  LABELS: activity
+  NOVEL_CLASSES: [3, 6]
+  sliding_win_len: 2000
+  sliding_win_stride: 300
+  n_window: 10
+  n_timestep: 200
   
 opp_preprocess:
   file_list: ['S1-ADL1.dat', 'S1-ADL2.dat', 'S1-ADL3.dat', 'S1-ADL4.dat', 'S1-ADL5.dat',
@@ -61,3 +72,14 @@ pamap2_preprocess:
   sliding_win_stride: 500
   n_window: 15
   n_timestep: 100
+
+realdisp_preprocess:
+  data_dir: data/processed/clean_realdisp_data.csv
+  SENSOR_PLACEMENT: ['RLA', 'RUA', 'BACK', 'LUA', 'LLA', 'RC', 'RT', 'LT', 'LC']
+  SENSOR_LIST: ['ACC_X', 'ACC_Y', 'ACC_Z', 'GYR_X', 'GYR_Y', 'GYR_Z', 'MAG_X', 'MAG_Y', 'MAG_Z', 'QUAT_1', 'QUAT_2', 'QUAT_3', 'QUAT_4']
+  LABELS: 'LABEL'
+  NOVEL_CLASSES: [2, 8, 12, 16]
+  sliding_win_len: 750
+  sliding_win_stride: 250
+  n_window: 15
+  n_timestep: 50

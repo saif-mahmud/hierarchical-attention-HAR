@@ -2,14 +2,16 @@ import os
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+import yaml
+
+metadata_file = open('configs/metadata.yaml', mode='r')
+metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)['realdisp_preprocess']
 
 DATA_DIR = '../data/raw/realdisp'
 DATA_FILES = sorted(os.listdir(DATA_DIR))
 
-SENSOR_PLACEMENT = ['RLA', 'RUA', 'BACK', 'LUA', 'LLA', 'RC', 'RT', 'LT', 'LC']
-SENSOR_LIST = ['ACC_X', 'ACC_Y', 'ACC_Z', 'GYR_X', 'GYR_Y', 'GYR_Z', 
-               'MAG_X', 'MAG_Y', 'MAG_Z', 'QUAT_1', 'QUAT_2', 'QUAT_3', 'QUAT_4']
-
+SENSOR_PLACEMENT = metadata['SENSOR_PLACEMENT']
+SENSOR_LIST = metadata['SENSOR_LIST']
 DATA_COLUMNS = ['TIME_SECOND', 'TIME_MICROSECOND']
 
 SENSOR_READINGS = list()
@@ -19,7 +21,7 @@ for loc in SENSOR_PLACEMENT:
         SENSOR_READINGS.append(str(loc + '_' + sensor))
         
 DATA_COLUMNS.extend(SENSOR_READINGS)
-DATA_COLUMNS.append('LABEL')
+DATA_COLUMNS.append(metadata['LABELS'])
 
 def get_metadata(filename:str):
     _name = filename.split('.')[0]

@@ -2,11 +2,30 @@ from preprocessing.opp_preprocess import *
 from preprocessing.mhealth_preprocess import *
 from preprocessing.pamap2_preprocess import *
 from preprocessing.sliding_window import *
+from preprocessing.mex_preprocessing import get_mex_data
+from preprocessing.realdisp_preprocessing import get_realdisp_data
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
+import numpy as np
+import tensorflow as tf
+import yaml
+import os
+
+def get_activity_dict(activity_map:dict, novel_classes:list):
+    _activity_map = activity_map.copy()
+    novel_map = dict()
+    
+    for activity_class in novel_classes:
+        novel_map[activity_class] = activity_map[activity_class]
+        _activity_map.pop(activity_class)
+        
+    return _activity_map, novel_map
 
 
-
-def get_train_test_data(dataset):
+def get_train_test_data(dataset, holdout=False):
+    
     metadata_file = open('configs/metadata.yaml', mode='r')
+
     if dataset == 'opp':
         metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)['opp_preprocess']
         FEATURES = [str(i) for i in range(77)]
@@ -97,6 +116,124 @@ def get_train_test_data(dataset):
         y_test = tf.keras.utils.to_categorical(y_test, num_classes=19)
 
         return (X_train, y_train),  (X_test, y_test)
-    else:
-        print('Please enter a valid dataset name')
-        return
+    
+    elif dataset == 'mex':
+        metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)['mex_preprocess']
+
+        if os.path.exists(metadata['data_dir']):
+            df = pd.read_csv(metadata['data_dir'])
+        else:
+            df = get_mex_data()
+
+        FEATURES = metadata['FEATURES']
+        FEATURES_THIGH = metadata['FEATURES_THIGH']
+        FEATURES_WRIST = metadata['FEATURES_WRIST']
+        LABELS = metadata['LABELS']
+
+        NOVEL_CLASSES = metadata['NOVEL_CLASSES']
+
+        WINDOW_SIZE = metadata['sliding_win_len']
+        STRIDE = metadata['sliding_win_stride']
+
+        N_WINDOW = metadata['n_window']
+        N_TIMESTEP = metadata['n_timestep']
+
+        scaler = StandardScaler()
+        df[FEATURES] = scaler.fit_transform(df[FEATURES])
+
+        if holdout:
+            holdout_data = df.loc[df[LABELS].isin(NOVEL_CLASSES)]
+            novel_data = holdout_data.copy().reset_index(drop=True)
+
+            df = df.drop(holdout_data.copy().index)
+            df = df.reset_index(drop=True)
+
+            X_holdout, y_holdout = create_windowed_dataset(novel_data, FEATURES, window_size=WINDOW_SIZE, stride = STRIDE)
+            X_holdout = X_holdout.reshape((X_holdout.shape[0], N_WINDOW, N_TIMESTEP, 6))
+            y_holdout = tf.keras.utils.to_categorical(y_holdout-1)
+
+        subjects = set(range(1, 31))
+        test_sub = set(range(11, 15))
+        train_sub = subjects - test_sub
+
+        train_df = df[df['subject_id'].isin(train_sub)]
+        test_df = df[df['subject_id'].isin(test_sub)]
+
+        X_train, y_train = create_windowed_dataset(train_df,FEATURES, window_size=WINDOW_SIZE, stride = STRIDE)
+        X_test, y_test = create_windowed_dataset(test_df,FEATURES, window_size=WINDOW_SIZE, stride = STRIDE)
+
+        X_train = X_train.reshape((X_train.shape[0], N_WINDOW, N_TIMESTEP, 6))
+        X_test = X_test.reshape((X_test.shape[0], N_WINDOW, N_TIMESTEP, 6))
+        
+
+        y_train = tf.keras.utils.to_categorical(y_train-1)
+        y_test = tf.keras.utils.to_categorical(y_test-1)
+
+        if holdout:
+            return (X_train, y_train),  (X_test, y_test), (X_holdout, y_holdout)
+        else:
+            return (X_train, y_train),  (X_test, y_test)
+
+    elif dataset == 'realdisp':
+        metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)['realdisp_preprocess']
+
+        if os.path.exists(metadata['data_dir']):
+            df = pd.read_csv(metadata['data_dir'])
+        else:
+            df = get_realdisp_data()
+
+        df = df[df['DISPLACEMENT'].isin(['ideal', 'self'])]
+        df = df.sort_values(by=['SUBJECT', 'LABEL', 'TIME_SECOND', 'TIME_MICROSECOND'], ignore_index=True)
+
+        SENSOR_PLACEMENT = metadata['SENSOR_PLACEMENT']
+        SENSOR_LIST = metadata['SENSOR_LIST']
+        FEATURES = list()
+        for loc in SENSOR_PLACEMENT:
+            for sensor in SENSOR_LIST:
+                FEATURES.append(str(loc + '_' + sensor))
+        LABELS = metadata['LABELS']
+
+        scaler = StandardScaler()
+        df[FEATURES] = scaler.fit_transform(df[FEATURES])
+
+        if holdout:
+            holdout_data = df.loc[df['LABEL'].isin(NOVEL_CLASSES)]
+            novel_data = holdout_data.copy().reset_index(drop=True)
+
+            df = df.drop(holdout_data.copy().index)
+            df = df.reset_index(drop=True)
+            X_holdout, y_holdout = create_windowed_dataset(novel_data, FEATURES, window_size=WINDOW_SIZE, stride = STRIDE)
+            X_holdout = X_holdout.reshape((X_holdout.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
+            y_holdout = tf.keras.utils.to_categorical(y_holdout-1, num_classes=33)
+
+        train_sub = set(range(1, 18))
+        test_sub = set([7])
+        train_sub = train_sub - test_sub
+
+        train_df = df[df['SUBJECT'].isin(train_sub)]
+        test_df = df[df['SUBJECT'].isin(test_sub)]
+
+        NOVEL_CLASSES = metadata['NOVEL_CLASSES']
+
+        WINDOW_SIZE = metadata['sliding_win_len']
+        STRIDE = metadata['sliding_win_stride']
+
+        N_WINDOW = metadata['n_window']
+        N_TIMESTEP = metadata['n_timestep']
+
+        X_train, y_train = create_windowed_dataset(train_df,FEATURES, window_size=WINDOW_SIZE, stride = STRIDE)
+        X_test, y_test = create_windowed_dataset(test_df,FEATURES, window_size=WINDOW_SIZE, stride = STRIDE)
+
+        X_train = X_train.reshape((X_train.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
+        X_test = X_test.reshape((X_test.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
+
+        y_train = tf.keras.utils.to_categorical(y_train - 1, num_classes=33)
+        y_test = tf.keras.utils.to_categorical(y_test - 1, num_classes=33)
+
+        if holdout:
+            return (X_train, y_train),  (X_test, y_test), (X_holdout, y_holdout)
+        else:
+            return (X_train, y_train),  (X_test, y_test)
+        
+
+            
