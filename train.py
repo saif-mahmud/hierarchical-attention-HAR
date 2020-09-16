@@ -2,12 +2,15 @@ from preprocessing.utils import get_train_test_data
 from model.hierarchical_self_attention_model import HSA_model
 import tensorflow as tf
 import sys
-import yaml                                                                                         
+import yaml 
+import warnings
+
+warnings.filterwarnings("ignore")                                                                                        
 
 dataset = str(sys.argv[1])
 
 hparam_file = open('configs/hyperparameters.yaml', mode='r')
-hyperparameters = yaml.load(hparam_file, Loader=yaml.FullLoader)
+hyperparameters = yaml.load(hparam_file, Loader=yaml.FullLoader)['train']
 
 def train_model(dataset):
     (X_train, y_train), (X_test, y_test) = get_train_test_data(dataset=dataset)
@@ -18,8 +21,10 @@ def train_model(dataset):
 
     model = hsa_model.get_model()
 
-    model.compile(loss=tf.keras.losses.CategoricalCrossentropy(), optimizer=tf.keras.optimizers.Adam(lr=0.001), metrics='accuracy')
+    model.compile(loss=tf.keras.losses.CategoricalCrossentropy(), optimizer=tf.keras.optimizers.Adam(lr=hyperparameters['learning_rate']), metrics='accuracy')
     print(model.summary())
+
+    model.fit(X_train, y_train, epochs=hyperparameters['epochs'], batch_size=hyperparameters['batch_size'], verbose=1, validation_split=hyperparameters['val_split'])
 
 if __name__ == "__main__":
     train_model(dataset)
