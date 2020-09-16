@@ -148,7 +148,7 @@ def get_train_test_data(dataset, holdout=False):
             df = df.drop(holdout_data.copy().index)
             df = df.reset_index(drop=True)
 
-            X_holdout, y_holdout = create_windowed_dataset(novel_data, FEATURES, window_size=WINDOW_SIZE, stride = STRIDE)
+            X_holdout, y_holdout = create_windowed_dataset(novel_data, FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride = STRIDE)
             X_holdout = X_holdout.reshape((X_holdout.shape[0], N_WINDOW, N_TIMESTEP, 6))
             y_holdout = tf.keras.utils.to_categorical(y_holdout-1)
 
@@ -159,8 +159,8 @@ def get_train_test_data(dataset, holdout=False):
         train_df = df[df['subject_id'].isin(train_sub)]
         test_df = df[df['subject_id'].isin(test_sub)]
 
-        X_train, y_train = create_windowed_dataset(train_df,FEATURES, window_size=WINDOW_SIZE, stride = STRIDE)
-        X_test, y_test = create_windowed_dataset(test_df,FEATURES, window_size=WINDOW_SIZE, stride = STRIDE)
+        X_train, y_train = create_windowed_dataset(train_df,FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride = STRIDE)
+        X_test, y_test = create_windowed_dataset(test_df,FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride = STRIDE)
 
         X_train = X_train.reshape((X_train.shape[0], N_WINDOW, N_TIMESTEP, 6))
         X_test = X_test.reshape((X_test.shape[0], N_WINDOW, N_TIMESTEP, 6))
@@ -202,7 +202,7 @@ def get_train_test_data(dataset, holdout=False):
 
             df = df.drop(holdout_data.copy().index)
             df = df.reset_index(drop=True)
-            X_holdout, y_holdout = create_windowed_dataset(novel_data, FEATURES, window_size=WINDOW_SIZE, stride = STRIDE)
+            X_holdout, y_holdout = create_windowed_dataset(novel_data, FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride = STRIDE)
             X_holdout = X_holdout.reshape((X_holdout.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
             y_holdout = tf.keras.utils.to_categorical(y_holdout-1, num_classes=33)
 
@@ -221,8 +221,8 @@ def get_train_test_data(dataset, holdout=False):
         N_WINDOW = metadata['n_window']
         N_TIMESTEP = metadata['n_timestep']
 
-        X_train, y_train = create_windowed_dataset(train_df,FEATURES, window_size=WINDOW_SIZE, stride = STRIDE)
-        X_test, y_test = create_windowed_dataset(test_df,FEATURES, window_size=WINDOW_SIZE, stride = STRIDE)
+        X_train, y_train = create_windowed_dataset(train_df,FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride = STRIDE)
+        X_test, y_test = create_windowed_dataset(test_df,FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride = STRIDE)
 
         X_train = X_train.reshape((X_train.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
         X_test = X_test.reshape((X_test.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))

@@ -7,22 +7,6 @@ import yaml
 metadata_file = open('configs/metadata.yaml', mode='r')
 metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)['realdisp_preprocess']
 
-DATA_DIR = '../data/raw/realdisp'
-DATA_FILES = sorted(os.listdir(DATA_DIR))
-
-SENSOR_PLACEMENT = metadata['SENSOR_PLACEMENT']
-SENSOR_LIST = metadata['SENSOR_LIST']
-DATA_COLUMNS = ['TIME_SECOND', 'TIME_MICROSECOND']
-
-SENSOR_READINGS = list()
-
-for loc in SENSOR_PLACEMENT:
-    for sensor in SENSOR_LIST:
-        SENSOR_READINGS.append(str(loc + '_' + sensor))
-        
-DATA_COLUMNS.extend(SENSOR_READINGS)
-DATA_COLUMNS.append(metadata['LABELS'])
-
 def get_metadata(filename:str):
     _name = filename.split('.')[0]
     
@@ -32,6 +16,22 @@ def get_metadata(filename:str):
     return subject, disp
 
 def get_realdisp_data():
+    DATA_DIR = 'data/raw/realdisp'
+    DATA_FILES = sorted(os.listdir(DATA_DIR))
+
+    SENSOR_PLACEMENT = metadata['SENSOR_PLACEMENT']
+    SENSOR_LIST = metadata['SENSOR_LIST']
+    DATA_COLUMNS = ['TIME_SECOND', 'TIME_MICROSECOND']
+
+    SENSOR_READINGS = list()
+
+    for loc in SENSOR_PLACEMENT:
+        for sensor in SENSOR_LIST:
+            SENSOR_READINGS.append(str(loc + '_' + sensor))
+            
+    DATA_COLUMNS.extend(SENSOR_READINGS)
+    DATA_COLUMNS.append(metadata['LABELS'])
+    
     merged_df = pd.DataFrame()
     
     for d_file in tqdm(DATA_FILES):
