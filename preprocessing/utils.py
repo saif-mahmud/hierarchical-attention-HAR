@@ -34,12 +34,11 @@ def get_train_test_data(dataset, holdout=False):
         HI_LABEL_COL = 79
         SUBJECT_ID = 80
         RUN_ID = 81
-        if os.path.exists(os.path.join('data', 'processed', 'clean_opp.csv')):
-            pass
-        else:
+        if not os.path.exists(os.path.join('data', 'processed', 'clean_opp.csv')):
             prepare_opp_data()
         df = pd.read_csv(os.path.join('data', 'processed', 'clean_opp.csv'))
         
+        df = df[df[str(HI_LABEL_COL)] != 0]
         df[FEATURES] = df[FEATURES].interpolate(method='linear', axis=0)
         df = df.fillna(0)
 
