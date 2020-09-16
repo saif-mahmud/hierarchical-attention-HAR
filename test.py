@@ -33,7 +33,7 @@ def test_hsa_model(dataset, pretrained = 'no', novelty= 'no'):
     if pretrained != 'use_pretrained':
         if novelty == 'include_novelty_exp':
             (X_train, y_train),  (X_test, y_test), (X_holdout, y_holdout) = get_train_test_data(dataset=dataset, holdout=True)
-            model_hsa, model_vae = train_model(dataset, (X_train, y_train))
+            model_hsa, model_vae = train_model(dataset, (X_train, y_train), train_vae=True)
         else:
             (X_train, y_train), (X_test, y_test) = get_train_test_data(dataset=dataset, holdout=False)
             model_hsa = train_model(dataset, (X_train, y_train))
