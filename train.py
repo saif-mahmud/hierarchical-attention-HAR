@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore")
 dataset = str(sys.argv[1])
 
 hparam_file = open('configs/hyperparameters.yaml', mode='r')
-hyperparameters = yaml.load(hparam_file, Loader=yaml.FullLoader)['train']
+hyperparameters = yaml.load(hparam_file, Loader=yaml.FullLoader)
 
 def train_model(dataset):
     (X_train, y_train), (X_test, y_test) = get_train_test_data(dataset=dataset)
@@ -21,10 +21,10 @@ def train_model(dataset):
 
     model = hsa_model.get_model()
 
-    model.compile(loss=tf.keras.losses.CategoricalCrossentropy(), optimizer=tf.keras.optimizers.Adam(lr=hyperparameters['learning_rate']), metrics='accuracy')
+    model.compile(loss=tf.keras.losses.CategoricalCrossentropy(), optimizer=tf.keras.optimizers.Adam(lr=hyperparameters['train']['learning_rate']), metrics='accuracy')
     print(model.summary())
 
-    model.fit(X_train, y_train, epochs=hyperparameters['epochs'], batch_size=hyperparameters['batch_size'], verbose=1, validation_split=hyperparameters['val_split'])
+    model.fit(X_train, y_train, epochs=hyperparameters['train']['epochs'], batch_size=hyperparameters['train']['batch_size'], verbose=1, validation_split=hyperparameters['train']['val_split'])
 
 if __name__ == "__main__":
     train_model(dataset)
