@@ -17,6 +17,9 @@ def get_metadata(filename:str):
 
 def get_realdisp_data():
     DATA_DIR = 'data/raw/realdisp'
+    if os.path.exists(os.path.join(DATA_DIR, 'dataset manual.pdf')):
+        os.remove(os.path.join(DATA_DIR, 'dataset manual.pdf'))
+
     DATA_FILES = sorted(os.listdir(DATA_DIR))
 
     SENSOR_PLACEMENT = metadata['SENSOR_PLACEMENT']
