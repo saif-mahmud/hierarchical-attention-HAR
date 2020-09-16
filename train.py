@@ -22,7 +22,7 @@ def train_model(dataset, train_data, train_vae=False):
     
     hsa_model.compile(loss=tf.keras.losses.CategoricalCrossentropy(), optimizer=tf.keras.optimizers.Adam(lr=hyperparameters['train']['learning_rate']), metrics='accuracy')
 
-    hsa_model.fit(X_train, y_train, epochs=hyperparameters['train']['epochs'], batch_size=hyperparameters['train']['batch_size'], verbose=1, validation_split=hyperparameters['train']['val_split'])
+    hsa_model.fit(X_train, y_train, epochs=hyperparameters['train']['epochs'], batch_size=hyperparameters['train']['batch_size'], verbose=2, validation_split=hyperparameters['train']['val_split'])
 
     if not train_vae:
         return hsa_model
