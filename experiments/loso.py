@@ -52,9 +52,9 @@ def run_loso_experiment(dataset: str, df: pd.DataFrame, activity_map: dict, sub_
             (X_test.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
 
         y_train = tf.keras.utils.to_categorical(
-            y_train - 1, num_classes=df['LABEL'].nunique())
+            y_train - 1, num_classes=df[LABELS].nunique())
         y_test = tf.keras.utils.to_categorical(
-            y_test - 1, num_classes=df['LABEL'].nunique())
+            y_test - 1, num_classes=df[LABELS].nunique())
 
         tf.keras.backend.clear_session()
 
@@ -71,15 +71,21 @@ def run_loso_experiment(dataset: str, df: pd.DataFrame, activity_map: dict, sub_
                       ['batch_size'], verbose=1, validation_split=hyperparameters['train']['val_split'])
 
         pred = hsa_model.predict(
-            X_test, batch_size=hyperparameters['train']['batch_size'])
+            X_test, batch_size=hyperparameters['test']['batch_size'])
 
-        out_res = open(os.path.join('result/realdisp',
-                                    str('subject___' + str(i).zfill(2) + '.txt')), 'w')
+        if not os.path.exists('result'):
+            os.mkdir('result')
+
+        out_res = open(os.path.join('result', dataset,
+                                    str('subject_' + str(i).zfill(2) + '.txt')), 'w')
         print(classification_report(np.argmax(y_test, axis=1), np.argmax(pred, axis=1), labels=np.unique(np.argmax(y_test, axis=1)),
                                     target_names=list(activity_map.values()), zero_division=1), file=out_res)
         print(classification_report(np.argmax(y_test, axis=1), np.argmax(pred, axis=1),
                                     labels=np.unique(np.argmax(y_test, axis=1)), target_names=list(activity_map.values()), zero_division=1))
         out_res.close()
+
+        if not os.path.exists('figures'):
+            os.mkdir('figures')
 
         confm = confusion_matrix(np.argmax(y_test, axis=1), np.argmax(
             pred, axis=1), normalize='true')
@@ -90,7 +96,7 @@ def run_loso_experiment(dataset: str, df: pd.DataFrame, activity_map: dict, sub_
         sns.heatmap(df_cm, annot=True, linewidths=0.05,
                     linecolor='blue', cmap="PuBu")
 
-        out_fig = 'subject___' + str(i).zfill(2) + '.png'
-        plt.savefig(os.path.join('figures/realdisp', out_fig))
+        out_fig = 'subject_' + str(i).zfill(2) + '.png'
+        plt.savefig(os.path.join('figures', dataset, out_fig))
 
         plt.show()
