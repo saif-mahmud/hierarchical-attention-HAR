@@ -12,6 +12,7 @@ import tensorflow as tf
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from tabulate import tabulate
 from matplotlib import pyplot as plt
 from sklearn.metrics import classification_report, confusion_matrix
 
@@ -36,7 +37,8 @@ except IndexError:
 
 
 def test_hsa_model(dataset, pretrained='no', novelty='no'):
-    print('\nPREPROCESSING AND LOADING DATA:')
+    print(tabulate([['Hierarchical Self Attention Based Human Activity Recognition and Novel Activity Detection']], [], tablefmt="fancy_grid"))
+    print('[PREPROCESSING AND LOADING DATA] ...')
     if pretrained != 'use_pretrained':
         if novelty == 'include_novelty_exp':
             (X_train, y_train),  (X_test, y_test), (X_holdout,

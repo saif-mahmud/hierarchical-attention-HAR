@@ -42,8 +42,7 @@ def train_model(dataset, train_data, train_vae=False):
         learning_rate=hyperparameters['train']['learning_rate'])
     hsa_vae.compile(optimizer)
 
-    hsa_vae.fit(X_train, epochs=hyperparameters['train']['epochs'],
-                batch_size=hyperparameters['train']['batch_size'])
+    hsa_vae.fit(X_train, epochs=hyperparameters['train']['epochs'], verbose=2,batch_size=hyperparameters['train']['batch_size'])
 
     print('---TRAINING COMPLETE---')
 
