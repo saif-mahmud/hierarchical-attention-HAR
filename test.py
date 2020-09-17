@@ -16,7 +16,8 @@ from matplotlib import pyplot as plt
 from sklearn.metrics import classification_report, confusion_matrix
 
 warnings.filterwarnings("ignore")
-tf.get_logger().setLevel('INFO')
+# tf.get_logger().setLevel('INFO')
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
 hparam_file = open('configs/hyperparameters.yaml', mode='r')
