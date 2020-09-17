@@ -1,14 +1,16 @@
-import csv
-import yaml
-import sys
-import os
-import h5py
 import copy
+import csv
+import os
+import sys
 import time
+
+import h5py
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+import yaml
 from sklearn.preprocessing import StandardScaler
+
 
 class data_reader:
     def __init__(self, train_test_files, use_columns, output_file_name, labelToId):

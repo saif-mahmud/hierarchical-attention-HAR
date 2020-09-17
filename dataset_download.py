@@ -1,10 +1,11 @@
-import os
-import requests
-import zipfile
 import datetime
-import time
-import yaml
+import os
 import sys
+import time
+import zipfile
+
+import requests
+import yaml
 
 
 def get_dataset(url: str, data_directory: str, file_name: str, unzip=True):
