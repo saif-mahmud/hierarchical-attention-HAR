@@ -55,7 +55,7 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
             if os.path.exists(os.path.join('saved_models', dataset)):
                 model_hsa = train_model(
                     dataset, (X_train, y_train), train_hsa=False)
-                model_hsa.load_weights(os.path.join('saved_models', dataset))
+                model_hsa.load_weights(os.path.join('saved_models', dataset, dataset))
             else:
                 print('Pretrained weights not available, starting training')
                 model_hsa = train_model(
@@ -72,10 +72,11 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
             (X_train, y_train), (X_test, y_test) = get_train_test_data(
                 dataset=dataset, holdout=False)
             model_hsa = train_model(dataset, (X_train, y_train))
+
     if (arg2 == 'save_weights') or (arg3 == 'save_weights') or (arg4 == 'save_weights'):
-        if not os.path.exists('saved_models'):
-            os.mkdir('saved_models')
-        model_hsa.save_weights(os.path.join('saved_models', dataset))
+        if not os.path.exists(os.path.join('saved_models', dataset)):
+            os.mkdir(os.path.join('saved_models', dataset))
+        model_hsa.save_weights(os.path.join('saved_models', dataset, dataset))
 
     pred = model_hsa.predict(
         X_test, batch_size=hyperparameters['test']['batch_size'])
