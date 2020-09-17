@@ -19,8 +19,8 @@ def get_activity_dict(activity_map: dict, novel_classes: list):
     novel_map = dict()
 
     for activity_class in novel_classes:
-        novel_map[activity_class] = activity_map[activity_class]
-        _activity_map.pop(activity_class)
+        novel_map[str(activity_class)] = activity_map[str(activity_class)]
+        _activity_map.pop(str(activity_class))
 
     return _activity_map, novel_map
 
