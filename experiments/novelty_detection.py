@@ -51,7 +51,7 @@ def novelty_eval_reconstrunction(train_rec_loss, test_rec_loss, novel_rec_loss, 
 #     print(classification_report(y_true, y_holdout, labels=[0, 1], target_names=['KNOWN', 'NOVEL']))
 
 
-def hparam_search(train_rec_loss, test_rec_loss, novel_rec_loss):
+def hparam_search(train_rec_loss, test_rec_loss, novel_rec_loss, plot=False):
     table = list()
     thresh_vals = list(np.arange(0.0, 1.01, 0.01))
 
@@ -65,18 +65,21 @@ def hparam_search(train_rec_loss, test_rec_loss, novel_rec_loss):
         idx = idx + 1
 
     table = np.array(table)
-    sns.lineplot(table[:, 1], table[:, 2], label='Accuracy')
-    sns.lineplot(table[:, 1], table[:, 3], label='Macro F1')
-    plt.xlabel('Hyperparameter Value')
-    plt.title('Novelty Detection Experiement')
-    plt.show()
+
+    if plot:
+        sns.lineplot(table[:, 1], table[:, 2], label='Accuracy')
+        sns.lineplot(table[:, 1], table[:, 3], label='Macro F1')
+        plt.xlabel('Hyperparameter Value')
+        plt.title('Novelty Detection Experiement')
+        plt.show()
 
     top_acc = np.array(pd.Series(table[:, 2]).nlargest().index)
     top_f1 = np.array(pd.Series(table[:, 3]).nlargest().index)
 
-    print('Index with Top Accuracy and Macro F1 : ', top_acc, top_f1)
-    print('Most Important Index : ', np.intersect1d(top_acc, top_f1))
+    # print('Index with Top Accuracy and Macro F1 : ', top_acc, top_f1)
+    # print('Most Important Index : ', np.intersect1d(top_acc, top_f1))
 
+    print('HYPERPARAMETER SEARCH FOR NOVELTY DETECTION THRESHOLD:')
     print(tabulate(table, headers=[
           'Index', 'Std. Multiplier Value', 'Accuracy', 'Macro F1'], tablefmt="grid"))
 

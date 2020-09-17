@@ -31,6 +31,7 @@ except IndexError:
 
 
 def test_hsa_model(dataset, pretrained = 'no', novelty= 'no'):
+    print('\nPREPROCESSING AND LOADING DATA:')
     if pretrained != 'use_pretrained':
         if novelty == 'include_novelty_exp':
             (X_train, y_train),  (X_test, y_test), (X_holdout, y_holdout) = get_train_test_data(dataset=dataset, holdout=True)
