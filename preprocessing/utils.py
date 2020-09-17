@@ -50,7 +50,7 @@ def get_train_test_data(dataset, holdout=False):
         df[FEATURES] = scaler.fit_transform(df[FEATURES])
 
         if holdout:
-            NOVEL_CLASSES = [2, 4]
+            NOVEL_CLASSES = metadata['NOVEL_CLASSES']
             holdout_data = df.loc[df[str(HI_LABEL_COL)].isin(NOVEL_CLASSES)]
             novel_data = holdout_data.copy().reset_index(drop=True)
             df = df.drop(holdout_data.copy().index)
@@ -99,7 +99,7 @@ def get_train_test_data(dataset, holdout=False):
             return
         df = prepare_mhealth_data()
         if holdout:
-            NOVEL_CLASSES = [1, 4, 8]
+            NOVEL_CLASSES = metadata['NOVEL_CLASSES']
             holdout_data = df.loc[df['label'].isin(NOVEL_CLASSES)]
             novel_data = holdout_data.copy().reset_index(drop=True)
 
@@ -159,7 +159,7 @@ def get_train_test_data(dataset, holdout=False):
         N_WINDOW, N_TIMESTEP = metadata['n_window'], metadata['n_timestep']
 
         if holdout:
-            NOVEL_CLASSES = [2, 6, 11, 14]
+            NOVEL_CLASSES = metadata['NOVEL_CLASSES']
             X_holdout_ts = test_x[np.isin(test_y, NOVEL_CLASSES)]
             y_holdout_ts = test_y[np.isin(test_y, NOVEL_CLASSES)]
             X_holdout_tr = train_x[np.isin(train_y, NOVEL_CLASSES)]
