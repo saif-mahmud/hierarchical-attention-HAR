@@ -13,9 +13,9 @@
 
 		python dataset_download.py [dataset_name]
 
-E.g. in order to download raw Opportunity dataset:
+	- E.g. in order to download raw Opportunity dataset:
 
-		python dataset_download.py opp
+			python dataset_download.py opp
 
 * The project contains several packages for various functionality. The project structure is discussed below:
 	- `configs/`: contains YAML files for the specification of hyperparameters and metadata for dataset download, preprocessing, model training, and testing.
@@ -42,8 +42,8 @@ Optional arguments are as follows:
     		
 		python test.py [dataset_name] [save_weights] [include_novelty_exp] [use_pretrained]
 	
-	- E.g. if we want to run experiments on the Opportunity dataset with saved pre-trained weights and conduct the novelty detection experiment, the command should be:
-	
+* E.g. if we want to run experiments on the Opportunity dataset with saved pre-trained weights and conduct the novelty detection experiment, the command should be:
+		
 		python test.py opp use_pretrained
 
 
