@@ -1,7 +1,7 @@
 # Hierarchical Self Attention Based Human Activity Recognition and Novel Activity Detection
 
 
-* In order to install the dependencies required for this project in the conda environment:
+* In order to install the dependencies required for this project in the `conda` environment:
 
 		conda create --name <env> --file requirements.txt
 
@@ -9,11 +9,11 @@
 
 		[dataset_name]: opp / mex / mhealth / pamap2 / realdisp
 
-* As the size of the datasets is beyond the specified maximum size of code and data submission, all the datasets are not included in this repository. These publicly available datasets can be obtained from the UCI repository through the python script dataset_download.py as per the terminal command given below:
+* As the size of the datasets is beyond the specified maximum size of code and data submission, all the datasets are not included in this repository. These publicly available datasets can be obtained from the UCI repository through the python script `dataset_download.py` as per the terminal command given below:
 
 		python dataset_download.py [dataset_name]
 
-	- E.g. in order to download raw Opportunity dataset:
+	- E.g. in order to download raw `Opportunity` dataset:
 
 			python dataset_download.py opp
 
