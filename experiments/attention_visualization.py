@@ -3,15 +3,13 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-
+# generate and save the required files and load
 opp_window_attn = np.load('../data/attn-maps/opp_benm_window.npy')
 opp_session_attn = np.load('../data/attn-maps/opp_benm_session.npy')
 opp_labels = np.load('../data/attn-maps/opp_benm_labels.npy')
 opp_preds = np.load('../data/attn-maps/opp_benm_preds.npy')
 opp_mid_level = np.load('../data/attn-maps/opp_benm_mid_l.npy')
 opp_locomotion = np.load('../data/attn-maps/opp_benm_loco_l.npy')
-
-
 
 
 def show_mex_attention(idx):
