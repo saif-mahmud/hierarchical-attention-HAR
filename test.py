@@ -26,21 +26,38 @@ hyperparameters = yaml.load(hparam_file, Loader=yaml.FullLoader)
 
 dataset = str(sys.argv[1])
 try:
-    pretrained = str(sys.argv[2])
+    arg2 = str(sys.argv[2])
 except IndexError:
-    pretrained = None
-
+    arg2 = None
 try:
-    novelty = str(sys.argv[3])
+    arg3 = str(sys.argv[3])
 except IndexError:
-    novelty = None
+    arg3 = None
+try:
+    arg4 = str(sys.argv[4])
+except IndexError:
+    arg4 = None
 
 
-def test_hsa_model(dataset, pretrained='no', novelty='no'):
+def test_hsa_model(dataset, arg2=None, arg3=None, arg4= None):
     print(tabulate([['Hierarchical Self Attention Based Human Activity Recognition and Novel Activity Detection']], [], tablefmt="fancy_grid"))
     print('[PREPROCESSING AND LOADING DATA] ...')
-    if pretrained != 'use_pretrained':
-        if novelty == 'include_novelty_exp':
+    if (arg2 == 'use_pretrained') or (arg3 == 'use_pretrained') or (arg4 == 'use_pretrained'):
+        if (arg2 == 'include_novelty_exp') or (arg3 == 'include_novelty_exp') or (arg4 == 'include_novelty_exp'):
+            print('Novelty experiment using pretrained weights not currently supported')
+            return
+        else:
+            (X_train, y_train), (X_test, y_test) = get_train_test_data(dataset=dataset, holdout=False)
+            if os.path.exists(os.path.join('saved_models', dataset)):
+                model_hsa = train_model(dataset, (X_train, y_train), train_hsa=False)
+                model_hsa.load_weights(os.path.join('saved_models', dataset))
+            else:
+                print('Pretrained weights not available, starting training')
+                model_hsa = train_model(dataset, (X_train, y_train), train_hsa=True)
+            # if 
+            # model_hsa.load
+    else:
+        if (arg2 == 'include_novelty_exp') or (arg3 == 'include_novelty_exp') or (arg4 == 'include_novelty_exp'):
             (X_train, y_train),  (X_test, y_test), (X_holdout,
                                                     y_holdout) = get_train_test_data(dataset=dataset, holdout=True)
             model_hsa, model_vae = train_model(
@@ -49,6 +66,10 @@ def test_hsa_model(dataset, pretrained='no', novelty='no'):
             (X_train, y_train), (X_test, y_test) = get_train_test_data(
                 dataset=dataset, holdout=False)
             model_hsa = train_model(dataset, (X_train, y_train))
+    if (arg2 == 'save_weights') or (arg3 == 'save_weights') or (arg4 == 'save_weights'):
+        if not os.path.exists('saved_models'):
+            os.mkdir('saved_models')
+        model_hsa.save_weights(os.path.join('saved_models', dataset))
 
     pred = model_hsa.predict(
         X_test, batch_size=hyperparameters['test']['batch_size'])
@@ -59,8 +80,9 @@ def test_hsa_model(dataset, pretrained='no', novelty='no'):
 
     print(classification_report(np.argmax(y_test, axis=1), np.argmax(pred, axis=1),
                                 labels=range(len(activity_names)), target_names=activity_names, zero_division=1))
-    # out_res = os.path.join('result', dataset + '_classification_report.txt')
+    # out_res = open(os.path.join('result', dataset + '_classification_report.txt'))
     # print(classification_report(np.argmax(y_test, axis=1), np.argmax(pred, axis=1),labels = range(len(activity_names)), target_names=activity_names, zero_division=1), file=out_res)
+    # out_res.close()
 
     confm = confusion_matrix(np.argmax(y_test, axis=1), np.argmax(
         pred, axis=1), labels=range(len(activity_names)))
@@ -72,11 +94,9 @@ def test_hsa_model(dataset, pretrained='no', novelty='no'):
     out_fig = dataset + '_confusion_matrix.png'
     plt.savefig(os.path.join('result', out_fig))
 
-    if novelty == 'include_novelty_exp':
+    if(arg2 == 'include_novelty_exp') or (arg3 == 'include_novelty_exp') or (arg4 == 'include_novelty_exp'):
         novelty_detection_exp(model_hsa, model_vae, X_train, X_test, X_holdout)
-    else:
-        pass
 
 
 if __name__ == "__main__":
-    test_hsa_model(dataset, pretrained, novelty)
+    test_hsa_model(dataset, arg2, arg3, arg4)

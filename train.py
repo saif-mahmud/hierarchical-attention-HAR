@@ -13,7 +13,7 @@ hparam_file = open('configs/hyperparameters.yaml', mode='r')
 hyperparameters = yaml.load(hparam_file, Loader=yaml.FullLoader)
 
 
-def train_model(dataset, train_data, train_vae=False):
+def train_model(dataset, train_data, train_vae=False, train_hsa=True):
     X_train, y_train = train_data
 
     n_window, n_timesteps, n_features, n_outputs = X_train.shape[
@@ -26,6 +26,9 @@ def train_model(dataset, train_data, train_vae=False):
 
     hsa_model.compile(loss=tf.keras.losses.CategoricalCrossentropy(), optimizer=tf.keras.optimizers.Adam(
         lr=hyperparameters['train']['learning_rate']), metrics='accuracy')
+    
+    if not train_hsa:
+        return hsa_model
 
     hsa_model.fit(X_train, y_train, epochs=hyperparameters['train']['epochs'], batch_size=hyperparameters['train']
                   ['batch_size'], verbose=2, validation_split=hyperparameters['train']['val_split'])
