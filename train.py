@@ -1,9 +1,10 @@
-from model.hierarchical_self_attention_model import HSA_model, HSA_VAE
+import sys
+import warnings
 
 import tensorflow as tf
-import sys
 import yaml
-import warnings
+
+from model.hierarchical_self_attention_model import HSA_VAE, HSA_model
 
 warnings.filterwarnings("ignore")
 tf.get_logger().setLevel('INFO')

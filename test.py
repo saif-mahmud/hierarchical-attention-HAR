@@ -1,20 +1,20 @@
+import json
 import os
 import sys
-import yaml
-import json
 import warnings
 
-from preprocessing.utils import get_train_test_data
-from train import train_model
-from experiments.novelty_detection import novelty_detection_exp
-
-import tensorflow as tf
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from tabulate import tabulate
+import tensorflow as tf
+import yaml
 from matplotlib import pyplot as plt
 from sklearn.metrics import classification_report, confusion_matrix
+from tabulate import tabulate
+
+from experiments.novelty_detection import novelty_detection_exp
+from preprocessing.utils import get_train_test_data
+from train import train_model
 
 warnings.filterwarnings("ignore")
 # tf.get_logger().setLevel('INFO')

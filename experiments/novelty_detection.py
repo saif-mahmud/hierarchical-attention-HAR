@@ -1,11 +1,13 @@
 import os
-import tensorflow as tf
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import matplotlib.pyplot as plt
+import tensorflow as tf
 from scipy import stats
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, f1_score
+from sklearn.metrics import (accuracy_score, classification_report,
+                             confusion_matrix, f1_score)
 from tabulate import tabulate
 
 

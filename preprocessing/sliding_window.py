@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+
 def create_windowed_dataset(df, features, class_label, window_size, stride, X= None, y= None):
     if X is None:
         X = df[features].values

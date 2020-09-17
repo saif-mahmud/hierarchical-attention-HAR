@@ -1,9 +1,10 @@
+import datetime
 import glob
 import os
 import time
-import datetime
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 
 DATA_DIR = '../data/raw/mex'
 THIGH_ACCEL = 'act'

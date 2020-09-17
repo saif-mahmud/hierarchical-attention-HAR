@@ -1,13 +1,16 @@
-import tensorflow as tf
+import os
+
 import numpy as np
 import pandas as pd
-import yaml
-import os
 import seaborn as sns
-from sklearn.metrics import classification_report, confusion_matrix, auc, roc_curve, f1_score, accuracy_score
+import tensorflow as tf
+import yaml
 from matplotlib import pyplot as plt
-from preprocessing.sliding_window import create_windowed_dataset
+from sklearn.metrics import (accuracy_score, auc, classification_report,
+                             confusion_matrix, f1_score, roc_curve)
+
 from model.hierarchical_self_attention_model import HSA_model
+from preprocessing.sliding_window import create_windowed_dataset
 
 hparam_file = open('configs/hyperparameters.yaml', mode='r')
 hyperparameters = yaml.load(hparam_file, Loader=yaml.FullLoader)
