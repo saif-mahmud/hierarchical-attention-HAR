@@ -89,7 +89,8 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
         NOVEL_CLASSES = metadata['NOVEL_CLASSES']
         activity_map, novel_map = get_activity_dict(
             activity_map, NOVEL_CLASSES)
-        print('NOVEL / UNSEEN ACTIVITIES: ', novel_map)
+        print('\nNOVEL / UNSEEN ACTIVITIES: ', novel_map)
+        print()
 
     activity_names = list(activity_map.values())
 
