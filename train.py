@@ -20,7 +20,7 @@ def train_model(dataset, train_data, train_vae=False, train_hsa=True):
     n_window, n_timesteps, n_features, n_outputs = X_train.shape[
         1], X_train.shape[2], X_train.shape[3], y_train.shape[1]
 
-    print('\nHIERARCHICAL SELF-ATTENTION MODEL:')
+    print('\n[HIERARCHICAL SELF-ATTENTION MODEL]')
 
     hsa_model = HSA_model(hyperparameters['HSA_model']['modality_indices'][dataset], n_window, n_timesteps, n_features, n_outputs, d_model=hyperparameters['HSA_model']['d_model'],
                           num_heads=hyperparameters['HSA_model']['num_heads'], dff=hyperparameters['HSA_model']['dff'], dropout_rate=hyperparameters['HSA_model']['dropout']).get_model()
@@ -37,7 +37,7 @@ def train_model(dataset, train_data, train_vae=False, train_hsa=True):
     if not train_vae:
         return hsa_model
 
-    print('\nVARIATIONAL AUTOENCODER ON TOP OF HIERARCHICAL SELF-ATTENTION MODEL:')
+    print('\n[VARIATIONAL AUTOENCODER ON TOP OF HIERARCHICAL SELF-ATTENTION MODEL]')
 
     hsa_vae = HSA_VAE(base_model=hsa_model,
                       feature_dim=hyperparameters['HSA_model']['d_model']).get_model()

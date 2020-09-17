@@ -55,7 +55,7 @@ def novelty_eval_reconstrunction(train_rec_loss, test_rec_loss, novel_rec_loss, 
 
 def hparam_search(train_rec_loss, test_rec_loss, novel_rec_loss, plot=False):
     table = list()
-    thresh_vals = list(np.arange(0.0, 1.01, 0.01))
+    thresh_vals = list(np.arange(0.0, 0.76, 0.01))
 
     idx = 0
 
