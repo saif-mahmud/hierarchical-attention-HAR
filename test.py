@@ -47,7 +47,7 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
     print('[PREPROCESSING AND LOADING DATA] ...')
     if (arg2 == 'use_pretrained') or (arg3 == 'use_pretrained') or (arg4 == 'use_pretrained'):
         if (arg2 == 'include_novelty_exp') or (arg3 == 'include_novelty_exp') or (arg4 == 'include_novelty_exp'):
-            print('Novelty experiment using pretrained weights not currently supported')
+            print('Novelty experiment using pretrained weights is not currently supported. Please conduct novelty experiment with model training.')
             return
         else:
             (X_train, y_train), (X_test, y_test) = get_train_test_data(
@@ -55,7 +55,8 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
             if os.path.exists(os.path.join('saved_models', dataset)):
                 model_hsa = train_model(
                     dataset, (X_train, y_train), train_hsa=False)
-                model_hsa.load_weights(os.path.join('saved_models', dataset, dataset)).expect_partial()
+                model_hsa.load_weights(os.path.join(
+                    'saved_models', dataset, dataset)).expect_partial()
             else:
                 print('Pretrained weights not available, starting training')
                 model_hsa = train_model(
