@@ -3,19 +3,19 @@
 
 * In order to install the dependencies required for this project in the conda environment:
 
-		`conda create --name <env> --file requirements.txt`
+		conda create --name <env> --file requirements.txt
 
 * Command line argument used for referring dataset names in python scripts are given below:
-	
-    	`[dataset_name]: opp / mex / mhealth / pamap2 / realdisp`
+
+		[dataset_name]: opp / mex / mhealth / pamap2 / realdisp
 
 * As the size of the datasets is beyond the specified maximum size of code and data submission, all the datasets are not included in this repository. These publicly available datasets can be obtained from the UCI repository through the python script dataset_download.py as per the terminal command given below:
 
-		`python dataset_download.py [dataset_name]`
+		python dataset_download.py [dataset_name]
 
 E.g. in order to download raw Opportunity dataset:
 
-		`python dataset_download.py opp`
+		python dataset_download.py opp
 
 * The project contains several packages for various functionality. The project structure is discussed below:
 	- `configs/`: contains YAML files for the specification of hyperparameters and metadata for dataset download, preprocessing, model training, and testing.
@@ -39,12 +39,12 @@ Optional arguments are as follows:
     - `include_novelty_exp`: train the VAE on top of the hierarchical attention model and generate results
     - `use_pretrained`: use pre-trained weights to initialize model instead of training
     - Command for running experiments:
+    		
+		python test.py [dataset_name] [save_weights] [include_novelty_exp] [use_pretrained]
 	
-    		`python test.py [dataset_name] [save_weights] [include_novelty_exp] [use_pretrained]`
-			
 	- E.g. if we want to run experiments on the Opportunity dataset with saved pre-trained weights and conduct the novelty detection experiment, the command should be:
 	
-    		`python test.py opp use_pretrained`
+		python test.py opp use_pretrained
 
 
 
