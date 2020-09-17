@@ -55,7 +55,7 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
             if os.path.exists(os.path.join('saved_models', dataset)):
                 model_hsa = train_model(
                     dataset, (X_train, y_train), train_hsa=False)
-                model_hsa.load_weights(os.path.join('saved_models', dataset, dataset))
+                model_hsa.load_weights(os.path.join('saved_models', dataset, dataset)).expect_partial()
             else:
                 print('Pretrained weights not available, starting training')
                 model_hsa = train_model(
