@@ -7,7 +7,8 @@ class AggregateAttention(tf.keras.layers.Layer):
         super(AggregateAttention, self).__init__()
         self.mha = MultiHeadAttention(d_model, num_heads)
         self.d_model = d_model
-        self.query = self.add_weight("learned_query", shape=[1, 1, self.d_model], initializer=tf.keras.initializers.Orthogonal())
+        self.query = self.add_weight("learned_query", shape=[
+                                     1, 1, self.d_model], initializer=tf.keras.initializers.Orthogonal())
 
     def call(self, v, k):
         batched_query = tf.tile(self.query, [tf.shape(v)[0], 1, 1])

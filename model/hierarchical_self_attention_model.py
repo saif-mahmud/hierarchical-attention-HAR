@@ -40,6 +40,7 @@ class HSA_VAE():
         self.hsa_model.trainable = False
 
     def get_model(self):
-        hsa_vae = VariationalAutoEncoder(base_model=self.hsa_model, original_dim=self.feature_dim)
+        hsa_vae = VariationalAutoEncoder(
+            base_model=self.hsa_model, original_dim=self.feature_dim)
 
         return hsa_vae

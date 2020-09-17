@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+
 class PositionalEncoding(tf.keras.layers.Layer):
 
     def __init__(self, position, d_model, include_dropout=True, dropout_rate=0.2):
@@ -11,7 +12,8 @@ class PositionalEncoding(tf.keras.layers.Layer):
             self.dropout = tf.keras.layers.Dropout(rate=dropout_rate)
 
     def get_angles(self, position, i, d_model):
-        angles = 1 / tf.pow(10000, (2 * (i // 2)) / tf.cast(d_model, tf.float32))
+        angles = 1 / tf.pow(10000, (2 * (i // 2)) /
+                            tf.cast(d_model, tf.float32))
         return position * angles
 
     def positional_encoding(self, position, d_model):
