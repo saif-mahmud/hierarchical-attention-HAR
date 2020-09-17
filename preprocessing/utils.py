@@ -75,7 +75,7 @@ def get_train_test_data(dataset, holdout=False):
                 HI_LABEL_COL), MID_LABEL_COL, LOCO_LABEL_COL, window_size=SLIDING_WINDOW_LENGTH, stride=SLIDING_WINDOW_STEP)
             X_holdout = X_holdout.reshape(
                 (X_holdout.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
-            y_holdout = tf.keras.utils.to_categorical(y_holdout-1)
+            y_holdout = tf.keras.utils.to_categorical(y_holdout)
 
         X_train = X_train.reshape(
             (X_train.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
@@ -124,7 +124,7 @@ def get_train_test_data(dataset, holdout=False):
                 novel_data,  FEATURES, 'label', window_size=SLIDING_WINDOW_LENGTH, stride=SLIDING_WINDOW_STEP)
             X_holdout = X_holdout.reshape(
                 (X_holdout.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
-            y_holdout = tf.keras.utils.to_categorical(y_holdout-1)
+            y_holdout = tf.keras.utils.to_categorical(y_holdout)
 
         X_train = X_train.reshape(
             (X_train.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
@@ -156,17 +156,38 @@ def get_train_test_data(dataset, holdout=False):
 
         SLIDING_WINDOW_LENGTH = metadata['sliding_win_len']
         SLIDING_WINDOW_STEP = metadata['sliding_win_stride']
+        N_WINDOW, N_TIMESTEP = metadata['n_window'], metadata['n_timestep']
+
+        if holdout:
+            NOVEL_CLASSES = [2, 6, 11, 14]
+            X_holdout_ts = test_x[np.isin(test_y, NOVEL_CLASSES)]
+            y_holdout_ts = test_y[np.isin(test_y, NOVEL_CLASSES)]
+            X_holdout_tr = train_x[np.isin(train_y, NOVEL_CLASSES)]
+            y_holdout_tr = train_y[np.isin(train_y, NOVEL_CLASSES)]
+
+            holdout_X = np.concatenate([X_holdout_ts, X_holdout_tr], axis=0)
+            holdout_y = np.concatenate([y_holdout_ts, y_holdout_tr], axis=0)
+
+            test_x = test_x[~ np.isin(test_y, NOVEL_CLASSES)]
+            test_y = test_y[~ np.isin(test_y, NOVEL_CLASSES)]
+            train_x = train_x[~ np.isin(train_y, NOVEL_CLASSES)]
+            train_y = train_y[~ np.isin(train_y, NOVEL_CLASSES)]
 
         X_train, y_train = create_windowed_dataset(
             None, None, None, X=train_x, y=train_y, window_size=SLIDING_WINDOW_LENGTH, stride=SLIDING_WINDOW_STEP)
         X_test, y_test = create_windowed_dataset(
             None, None, None, X=test_x, y=test_y, window_size=SLIDING_WINDOW_LENGTH, stride=SLIDING_WINDOW_STEP)
 
-        N_WINDOW, N_TIMESTEP = metadata['n_window'], metadata['n_timestep']
         X_train = X_train.reshape((X_train.shape[0], N_WINDOW, N_TIMESTEP, 18))
         X_test = X_test.reshape((X_test.shape[0], N_WINDOW, N_TIMESTEP, 18))
         y_train = tf.keras.utils.to_categorical(y_train, num_classes=19)
         y_test = tf.keras.utils.to_categorical(y_test, num_classes=19)
+
+        if holdout:
+            X_holdout, y_holdout = create_windowed_dataset(None, None, None, X=holdout_X, y=holdout_y, window_size=SLIDING_WINDOW_LENGTH, stride = SLIDING_WINDOW_STEP)
+            X_holdout = X_holdout.reshape((X_holdout.shape[0], N_WINDOW, N_TIMESTEP, 18))
+            y_holdout = tf.keras.utils.to_categorical(y_holdout, num_classes=19)
+            return (X_train, y_train),  (X_test, y_test), (X_holdout, y_holdout)
 
         return (X_train, y_train),  (X_test, y_test)
 
