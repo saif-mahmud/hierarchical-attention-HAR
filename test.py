@@ -80,6 +80,9 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
     pred = model_hsa.predict(
         X_test, batch_size=hyperparameters['test']['batch_size'])
 
+    activity_map = json.load(
+        open(os.path.join('data', 'activity_maps', dataset + '_activity.json')))
+
     if(arg2 == 'include_novelty_exp') or (arg3 == 'include_novelty_exp') or (arg4 == 'include_novelty_exp'):
         metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)[
             dataset + '_preprocess']
@@ -87,9 +90,6 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
         activity_map, novel_map = get_activity_dict(
             activity_map, NOVEL_CLASSES)
         print('NOVEL / UNSEEN ACTIVITIES: ', novel_map)
-
-    activity_map = json.load(
-        open(os.path.join('data', 'activity_maps', dataset + '_activity.json')))
 
     activity_names = list(activity_map.values())
 
