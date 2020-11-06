@@ -8,7 +8,7 @@ HSA_model:
   dff: 256
   d_model: 64
   num_heads: 4
-  dropout: 0.2
+  dropout_rate: 0.2
 
 train:
   batch_size: 64

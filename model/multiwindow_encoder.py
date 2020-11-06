@@ -1,5 +1,5 @@
 import tensorflow as tf
-from model.modaility_encoder import ModalityEncoderBlock
+from model.modality_encoder import ModalityEncoderBlock
 from model.combined_sensor_attention import CombinedSensorSelfAttention
 
 
@@ -26,7 +26,7 @@ class MultiWindowEncoder(tf.keras.layers.Layer):
         self.window_encoder = get_modality_encoder(
             modality_indices, n_timesteps=n_timesteps, n_features=n_features, d_model=d_model, num_heads=num_heads, dff=dff, dropout_rate=dropout_rate)
         self.combined_sensor_attn = CombinedSensorSelfAttention(
-            d_model, 1, dff, dropout_rate)
+            d_model, 1, dff, dropout_rate, concat=True)
 
     def call(self, x):
         batch_size = tf.shape(x)[0]
