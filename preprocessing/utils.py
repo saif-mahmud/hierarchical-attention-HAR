@@ -10,7 +10,7 @@ from preprocessing.mex_preprocess import get_mex_data
 from preprocessing.mhealth_preprocess import *
 from preprocessing.opp_preprocess import *
 from preprocessing.pamap2_preprocess import *
-from preprocessing.realdisp_preprocess import get_realdisp_data
+# from preprocessing.realdisp_preprocess import get_realdisp_data
 from preprocessing.sliding_window import create_windowed_dataset
 
 
@@ -27,7 +27,7 @@ def get_activity_dict(activity_map: dict, novel_classes: list):
 
 def get_train_test_data(dataset, holdout=False):
 
-    metadata_file = open('configs/metadata.yaml', mode='r')
+    metadata_file = open('../configs/metadata.yaml', mode='r')
 
     if dataset == 'opp':
         metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)[
@@ -142,7 +142,7 @@ def get_train_test_data(dataset, holdout=False):
     elif dataset == 'pamap2':
         metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)[
             'pamap2_preprocess']
-        file_path = os.path.join('data', 'processed', 'pamap2_106.h5')
+        file_path = os.path.join('..', 'data', 'processed', 'pamap2_106.h5')
         if not os.path.exists(file_path):
             train_test_files = metadata['file_list']
             use_columns = metadata['columns_list']
@@ -252,72 +252,72 @@ def get_train_test_data(dataset, holdout=False):
         else:
             return (X_train, y_train),  (X_test, y_test)
 
-    elif dataset == 'realdisp':
-        metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)[
-            'realdisp_preprocess']
+#     elif dataset == 'realdisp':
+#         metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)[
+#             'realdisp_preprocess']
 
-        if os.path.exists(metadata['data_dir']):
-            df = pd.read_csv(metadata['data_dir'])
-        else:
-            df = get_realdisp_data()
+#         if os.path.exists(metadata['data_dir']):
+#             df = pd.read_csv(metadata['data_dir'])
+#         else:
+#             df = get_realdisp_data()
 
-        df = df[df['DISPLACEMENT'].isin(['ideal', 'self'])]
-        df = df.sort_values(
-            by=['SUBJECT', 'LABEL', 'TIME_SECOND', 'TIME_MICROSECOND'], ignore_index=True)
+#         df = df[df['DISPLACEMENT'].isin(['ideal', 'self'])]
+#         df = df.sort_values(
+#             by=['SUBJECT', 'LABEL', 'TIME_SECOND', 'TIME_MICROSECOND'], ignore_index=True)
 
-        SENSOR_PLACEMENT = metadata['SENSOR_PLACEMENT']
-        SENSOR_LIST = metadata['SENSOR_LIST']
-        FEATURES = list()
-        for loc in SENSOR_PLACEMENT:
-            for sensor in SENSOR_LIST:
-                FEATURES.append(str(loc + '_' + sensor))
-        LABELS = metadata['LABELS']
+#         SENSOR_PLACEMENT = metadata['SENSOR_PLACEMENT']
+#         SENSOR_LIST = metadata['SENSOR_LIST']
+#         FEATURES = list()
+#         for loc in SENSOR_PLACEMENT:
+#             for sensor in SENSOR_LIST:
+#                 FEATURES.append(str(loc + '_' + sensor))
+#         LABELS = metadata['LABELS']
 
-        scaler = StandardScaler()
-        df[FEATURES] = scaler.fit_transform(df[FEATURES])
+#         scaler = StandardScaler()
+#         df[FEATURES] = scaler.fit_transform(df[FEATURES])
 
-        if holdout:
-            holdout_data = df.loc[df['LABEL'].isin(NOVEL_CLASSES)]
-            novel_data = holdout_data.copy().reset_index(drop=True)
+#         if holdout:
+#             holdout_data = df.loc[df['LABEL'].isin(NOVEL_CLASSES)]
+#             novel_data = holdout_data.copy().reset_index(drop=True)
 
-            df = df.drop(holdout_data.copy().index)
-            df = df.reset_index(drop=True)
-            X_holdout, y_holdout = create_windowed_dataset(
-                novel_data, FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride=STRIDE)
-            X_holdout = X_holdout.reshape(
-                (X_holdout.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
-            y_holdout = tf.keras.utils.to_categorical(
-                y_holdout-1, num_classes=33)
+#             df = df.drop(holdout_data.copy().index)
+#             df = df.reset_index(drop=True)
+#             X_holdout, y_holdout = create_windowed_dataset(
+#                 novel_data, FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride=STRIDE)
+#             X_holdout = X_holdout.reshape(
+#                 (X_holdout.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
+#             y_holdout = tf.keras.utils.to_categorical(
+#                 y_holdout-1, num_classes=33)
 
-        train_sub = set(range(1, 18))
-        test_sub = set([7])
-        train_sub = train_sub - test_sub
+#         train_sub = set(range(1, 18))
+#         test_sub = set([7])
+#         train_sub = train_sub - test_sub
 
-        train_df = df[df['SUBJECT'].isin(train_sub)]
-        test_df = df[df['SUBJECT'].isin(test_sub)]
+#         train_df = df[df['SUBJECT'].isin(train_sub)]
+#         test_df = df[df['SUBJECT'].isin(test_sub)]
 
-        NOVEL_CLASSES = metadata['NOVEL_CLASSES']
+#         NOVEL_CLASSES = metadata['NOVEL_CLASSES']
 
-        WINDOW_SIZE = metadata['sliding_win_len']
-        STRIDE = metadata['sliding_win_stride']
+#         WINDOW_SIZE = metadata['sliding_win_len']
+#         STRIDE = metadata['sliding_win_stride']
 
-        N_WINDOW = metadata['n_window']
-        N_TIMESTEP = metadata['n_timestep']
+#         N_WINDOW = metadata['n_window']
+#         N_TIMESTEP = metadata['n_timestep']
 
-        X_train, y_train = create_windowed_dataset(
-            train_df, FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride=STRIDE)
-        X_test, y_test = create_windowed_dataset(
-            test_df, FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride=STRIDE)
+#         X_train, y_train = create_windowed_dataset(
+#             train_df, FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride=STRIDE)
+#         X_test, y_test = create_windowed_dataset(
+#             test_df, FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride=STRIDE)
 
-        X_train = X_train.reshape(
-            (X_train.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
-        X_test = X_test.reshape(
-            (X_test.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
+#         X_train = X_train.reshape(
+#             (X_train.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
+#         X_test = X_test.reshape(
+#             (X_test.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
 
-        y_train = tf.keras.utils.to_categorical(y_train - 1, num_classes=33)
-        y_test = tf.keras.utils.to_categorical(y_test - 1, num_classes=33)
+#         y_train = tf.keras.utils.to_categorical(y_train - 1, num_classes=33)
+#         y_test = tf.keras.utils.to_categorical(y_test - 1, num_classes=33)
 
-        if holdout:
-            return (X_train, y_train),  (X_test, y_test), (X_holdout, y_holdout)
-        else:
-            return (X_train, y_train),  (X_test, y_test)
+#         if holdout:
+#             return (X_train, y_train),  (X_test, y_test), (X_holdout, y_holdout)
+#         else:
+#             return (X_train, y_train),  (X_test, y_test)

@@ -5,6 +5,7 @@ HSA_model:
     mhealth: [0,3,12,21]
     pamap2: [0, 6, 12, 18]
     realdisp: [0, 13, 26, 39, 52, 65, 78, 91, 104, 117]
+    daphnet: [0, 3, 6, 9]
   dff: 256
   d_model: 64
   num_heads: 4
