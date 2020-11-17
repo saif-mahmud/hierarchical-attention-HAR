@@ -1,4 +1,39 @@
 HSA_model:
+  opp:
+    modality_indices: [0, 9, 18, 27, 36, 45, 61, 77]
+    dff: 256
+    d_model: 64
+    num_heads: 4
+    dropout_rate: 0.2
+  
+  pamap2:
+    modality_indices: [0, 6, 12, 18]
+    dff: 256
+    d_model: 64
+    num_heads: 4
+    dropout_rate: 0.2
+    
+  daphnet:
+    modality_indices: [0, 3, 6, 9]
+    dff: 256
+    d_model: 64
+    num_heads: 4
+    dropout_rate: 0.2
+    
+  skoda:
+    modality_indices: [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57]
+    dff: 256
+    d_model: 64
+    num_heads: 4
+    dropout_rate: 0.2
+    
+  uschad:
+    modality_indices: [0,6]
+    dff: 512
+    d_model: 128
+    num_heads: 8
+    dropout_rate: 0.2
+
   modality_indices:
     opp: [0, 9, 18, 27, 36, 45, 61, 77]
     mex: [0, 3, 6]
@@ -8,17 +43,12 @@ HSA_model:
     daphnet: [0, 3, 6, 9]
     skoda: [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57]
     uschad: [0,6]
-    
-  dff: 256
-  d_model: 64
-  num_heads: 4
-  dropout_rate: 0.2
 
 train:
   batch_size: 64
   epochs: 100
   val_split: 0.1
-  learning_rate: 0.001
+  learning_rate: 0.0001
 
 test:
   batch_size: 64

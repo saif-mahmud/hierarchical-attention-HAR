@@ -66,9 +66,6 @@ mhealth_preprocess:
     NOVEL_CLASSES: [1, 4, 8]
     
 daphnet_preprocess:
-    columns_list: ['acc_chest_X', 'acc_chest_Y', 'acc_chest_Z','ecg_1', 'ecg_2','acc_la_X', 'acc_la_Y', 'acc_la_Z',
-           'gyr_la_X', 'gyr_la_Y', 'gyr_la_Z','mag_la_X', 'mag_la_Y', 'mag_la_Z','acc_RLA_X', 'acc_RLA_Y', 'acc_RLA_Z',
-           'gyr_RLA_X', 'gyr_RLA_Y', 'gyr_RLA_Z','mag_RLA_X', 'mag_RLA_Y', 'mag_RLA_Z', 'label']
     feature_list: ['Ankle_acc_x', 'Ankle_acc_y', 'Ankle_acc_z', 'Thigh_acc_x','Thigh_acc_y', 'Thigh_acc_z', 'Trunk_acc_x', 'Trunk_acc_y','Trunk_acc_z']
     sliding_win_len: 1500
     sliding_win_stride: 500
@@ -77,10 +74,10 @@ daphnet_preprocess:
     
 uschad_preprocess:
     feature_list: ['acc_x', 'acc_y', 'acc_z', 'gyr_x', 'gyr_y', 'gyr_z']
-    sliding_win_len: 1500
-    sliding_win_stride: 500
-    n_window: 15
-    n_timestep: 100
+    sliding_win_len: 500
+    sliding_win_stride: 250
+    n_window: 10
+    n_timestep: 50
 
 pamap2_preprocess:
   label_to_id: {'1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5, '7': 6, '9': 7, '10': 8, '11': 9, '12': 10,
