@@ -3,7 +3,7 @@ HSA_model:
     modality_indices: [0, 9, 18, 27, 36, 45, 61, 77]
     dff: 256
     d_model: 64
-    num_heads: 4
+    num_heads: 2
     dropout_rate: 0.2
   
   pamap2:
@@ -17,7 +17,7 @@ HSA_model:
     modality_indices: [0, 3, 6, 9]
     dff: 256
     d_model: 64
-    num_heads: 4
+    num_heads: 2
     dropout_rate: 0.2
     
   skoda:
@@ -31,8 +31,8 @@ HSA_model:
     modality_indices: [0,6]
     dff: 512
     d_model: 128
-    num_heads: 8
-    dropout_rate: 0.2
+    num_heads: 4
+    dropout_rate: 0.25
 
   modality_indices:
     opp: [0, 9, 18, 27, 36, 45, 61, 77]
@@ -48,7 +48,7 @@ train:
   batch_size: 64
   epochs: 100
   val_split: 0.1
-  learning_rate: 0.0001
+  learning_rate: 0.001
 
 test:
   batch_size: 64

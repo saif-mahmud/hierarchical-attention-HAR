@@ -62,7 +62,7 @@ class HSA_model_two_level():
 
 
 class HSA_model_session_guided_window():
-    def __init__(self, modality_indices, n_window, n_timesteps, n_features, n_outputs, dff, d_model, num_heads, dropout_rate, n_outputs_window=18):
+    def __init__(self, modality_indices, n_window, n_timesteps, n_features, n_outputs, dff, d_model, num_heads, dropout_rate, n_outputs_window):
         super().__init__()
         self.modality_indices = modality_indices
         self.n_window, self.n_timesteps, self.n_features = n_window, n_timesteps, n_features
@@ -79,11 +79,16 @@ class HSA_model_session_guided_window():
         session_repr, _ = CombinedSensorSelfAttention(
             self.d_model, 1, self.dff, self.dropout_rate, concat=False)(x)
         session_repeated = tf.keras.layers.Reshape((self.n_window, self.d_model)) (tf.repeat(session_repr, self.n_window, axis=0))
+        
         window_session_combined = tf.keras.layers.Concatenate(axis=-1) ([window_repr, session_repeated])
+        window_session_dense = tf.keras.layers.Dense(self.d_model*8, activation='relu')(window_session_combined)
         window_prediction = tf.keras.layers.Dense(
-            self.n_outputs_window, activation='softmax', name='window_pred')(window_session_combined)
+            self.n_outputs_window, activation='softmax', name='window_pred')(window_session_dense)
+        
+        session_dense = tf.keras.layers.Dense(self.d_model*4, activation='relu')(session_repr)
         session_prediction = tf.keras.layers.Dense(
-            self.n_outputs, activation='softmax', name='session_pred')(session_repr)
+            self.n_outputs, activation='softmax', name='session_pred')(session_dense)
+        
         model = tf.keras.Model(inputs=inputs, outputs=[window_prediction, session_prediction])
         return model
 
