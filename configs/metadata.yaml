@@ -74,10 +74,10 @@ daphnet_preprocess:
     
 uschad_preprocess:
     feature_list: ['acc_x', 'acc_y', 'acc_z', 'gyr_x', 'gyr_y', 'gyr_z']
-    sliding_win_len: 1000
-    sliding_win_stride: 250
+    sliding_win_len: 200
+    sliding_win_stride: 100
     n_window: 10
-    n_timestep: 100
+    n_timestep: 20
 
 pamap2_preprocess:
   label_to_id: {'1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5, '7': 6, '9': 7, '10': 8, '11': 9, '12': 10,
