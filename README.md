@@ -1,4 +1,4 @@
-# Hierarchical Self Attention Based Human Activity Recognition and Novel Activity Detection
+# Hierarchical Self Attention Based Autoencoder for Open-Set Human Activity Recognition
 
 
 * In order to install the dependencies required for this project in the `conda` environment:
