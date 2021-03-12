@@ -1,5 +1,8 @@
 # Hierarchical Self Attention Based Autoencoder for Open-Set Human Activity Recognition
 
+### This repository is currently being updated, we hope to publish the final version of the code very soon.
+
+
 
 * In order to install the dependencies required for this project in the `conda` environment:
 
