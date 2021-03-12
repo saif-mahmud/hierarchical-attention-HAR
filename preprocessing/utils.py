@@ -142,7 +142,7 @@ def get_train_test_data(dataset, holdout=False):
     elif dataset == 'pamap2':
         metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)[
             'pamap2_preprocess']
-        file_path = os.path.join('..', 'data', 'processed', 'pamap2_106.h5')
+        file_path = os.path.join('data', 'processed', 'pamap2_106.h5')
         if not os.path.exists(file_path):
             train_test_files = metadata['file_list']
             use_columns = metadata['columns_list']
@@ -182,6 +182,8 @@ def get_train_test_data(dataset, holdout=False):
         X_test = X_test.reshape((X_test.shape[0], N_WINDOW, N_TIMESTEP, 18))
         y_train = tf.keras.utils.to_categorical(y_train, num_classes=19)
         y_test = tf.keras.utils.to_categorical(y_test, num_classes=19)
+        y_train_mid = np.repeat(np.expand_dims(y_train, axis=1), repeats=N_WINDOW, axis=1)
+        y_test_mid = np.repeat(np.expand_dims(y_test, axis=1), repeats=N_WINDOW, axis=1)
 
         if holdout:
             X_holdout, y_holdout = create_windowed_dataset(None, None, None, X=holdout_X, y=holdout_y, window_size=SLIDING_WINDOW_LENGTH, stride = SLIDING_WINDOW_STEP)
@@ -189,7 +191,7 @@ def get_train_test_data(dataset, holdout=False):
             y_holdout = tf.keras.utils.to_categorical(y_holdout, num_classes=19)
             return (X_train, y_train),  (X_test, y_test), (X_holdout, y_holdout)
 
-        return (X_train, y_train),  (X_test, y_test)
+        return (X_train, y_train, y_train_mid), (None, None, None),  (X_test, y_test, y_test_mid)
 
     elif dataset == 'mex':
         metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)[
@@ -266,12 +268,14 @@ def get_train_test_data(dataset, holdout=False):
             df = get_daphnet_data()
 
         df = df.fillna(0)
-        df = df[df[LABELS] != 2]
+        # if not holdout:
+        #     df = df[df[LABELS] != 0]
+        #     df[LABELS] = df[LABELS]
         scaler = StandardScaler()
         df[FEATURES] = scaler.fit_transform(df[FEATURES])
 
         if holdout:
-            NOVEL_CLASSES = [2]
+            NOVEL_CLASSES = [0]
             holdout_data = df.loc[df['Label'].isin(NOVEL_CLASSES)]
             novel_data = holdout_data.copy().reset_index(drop=True)
 
@@ -299,9 +303,9 @@ def get_train_test_data(dataset, holdout=False):
         X_test = X_test.reshape(
             (X_test.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
 
-        y_train = tf.keras.utils.to_categorical(y_train, num_classes=2)
-        y_val = tf.keras.utils.to_categorical(y_val, num_classes=2)
-        y_test = tf.keras.utils.to_categorical(y_test, num_classes=2)
+        y_train = tf.keras.utils.to_categorical(y_train, num_classes=3)
+        y_val = tf.keras.utils.to_categorical(y_val, num_classes=3)
+        y_test = tf.keras.utils.to_categorical(y_test, num_classes=3)
 
         y_train_mid = np.repeat(np.expand_dims(y_train, axis=1), repeats=metadata['n_window'], axis=1)
         y_val_mid = np.repeat(np.expand_dims(y_val, axis=1), repeats=metadata['n_window'], axis=1)

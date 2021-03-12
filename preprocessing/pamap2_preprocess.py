@@ -44,7 +44,7 @@ class data_reader:
     def readPamap2Files(self, filelist, cols, labelToId):
         data = []
         labels = []
-        base_path = os.path.join('..', '..','data','HAR','raw', 'PAMAP2_Dataset', 'Protocol')
+        base_path = os.path.join('data','raw', 'pamap2', 'PAMAP2_Dataset', 'Protocol')
         print(base_path)
         assert os.path.exists(base_path), "Please download the dataset first using the script"
         for i, filename in enumerate(filelist):

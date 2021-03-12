@@ -77,8 +77,8 @@ class HSA_model_session_guided_window():
         x = ModalityEncoderBlock(n_timesteps=self.n_window, d_model=self.d_model, num_heads=self.num_heads,
                                  dff=self.dff, num_sa_blocks=2, dropout_rate=self.dropout_rate)(window_repr)
         session_repr, _ = CombinedSensorSelfAttention(
-            self.d_model, 1, self.dff, self.dropout_rate, concat=False)(x)
-        session_repeated = tf.keras.layers.Reshape((self.n_window, self.d_model)) (tf.repeat(session_repr, self.n_window, axis=0))
+            self.d_model, 1, self.dff, self.dropout_rate, concat=False)(x) 
+        session_repeated = tf.keras.layers.Reshape((self.n_window, self.d_model)) (tf.repeat(session_repr, self.n_window, axis=1))
         
         window_session_combined = tf.keras.layers.Concatenate(axis=-1) ([window_repr, session_repeated])
         window_session_dense = tf.keras.layers.Dense(self.d_model*8, activation='relu')(window_session_combined)

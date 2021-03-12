@@ -42,7 +42,7 @@ except IndexError:
 
 
 def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
-    print(tabulate([['Hierarchical Self Attention Based Human Activity Recognition and Novel Activity Detection']], [
+    print(tabulate([['Hierarchical Self Attention Based Autoencoder for Open-Set Human Activity Recognition']], [
     ], tablefmt="fancy_grid"))
     print('[PREPROCESSING AND LOADING DATA] ...')
     if (arg2 == 'use_pretrained') or (arg3 == 'use_pretrained') or (arg4 == 'use_pretrained'):
@@ -70,16 +70,20 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
             model_hsa, model_vae = train_model(
                 dataset, (X_train, y_train), train_vae=True)
         else:
-            (X_train, y_train), (X_test, y_test) = get_train_test_data(
+            (X_train, y_train, y_train_mid), (X_val, y_val, y_val_mid), (X_test, y_test, y_test_mid) = get_train_test_data(
                 dataset=dataset, holdout=False)
-            model_hsa = train_model(dataset, (X_train, y_train))
+            if X_val == None:
+                val_data = None
+            else:
+                val_data = (X_val, y_val, y_val_mid)
+            model_hsa = train_model(dataset, (X_train, y_train, y_train_mid),  val_data=val_data)
 
     if (arg2 == 'save_weights') or (arg3 == 'save_weights') or (arg4 == 'save_weights'):
         if not os.path.exists(os.path.join('saved_models', dataset)):
             os.mkdir(os.path.join('saved_models', dataset))
         model_hsa.save_weights(os.path.join('saved_models', dataset, dataset))
 
-    pred = model_hsa.predict(
+    pred_mid, pred_sess = model_hsa.predict(
         X_test, batch_size=hyperparameters['test']['batch_size'])
 
     activity_map = json.load(
@@ -95,15 +99,20 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
         print()
 
     activity_names = list(activity_map.values())
+    print("Window level:")
+    print(classification_report(np.argmax(y_test_mid.reshape(-1, 2), axis=1), np.argmax(pred_mid.reshape(-1, 2), axis=1), labels=range(len(activity_names)), target_names=activity_names, zero_division=1))
+    confm = confusion_matrix(np.argmax(y_test_mid.reshape(-1, 19), axis=1), np.argmax(pred_mid.reshape(-1, 19), axis=1), labels=range(len(activity_names)))
+    print(confm)
 
-    print(classification_report(np.argmax(y_test, axis=1), np.argmax(pred, axis=1),
+    print("Session level:")
+    print(classification_report(np.argmax(y_test, axis=1), np.argmax(pred_sess, axis=1),
                                 labels=range(len(activity_names)), target_names=activity_names, zero_division=1))
     # out_res = open(os.path.join('result', dataset + '_classification_report.txt'))
     # print(classification_report(np.argmax(y_test, axis=1), np.argmax(pred, axis=1),labels = range(len(activity_names)), target_names=activity_names, zero_division=1), file=out_res)
     # out_res.close()
 
     confm = confusion_matrix(np.argmax(y_test, axis=1), np.argmax(
-        pred, axis=1), labels=range(len(activity_names)))
+        pred_sess, axis=1), labels=range(len(activity_names)))
     print(confm)
 
     df_cm = pd.DataFrame(confm, index=activity_names, columns=activity_names)
