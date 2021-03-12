@@ -10,7 +10,7 @@
 
 * Command line argument used for referring dataset names in python scripts are given below:
 
-		[dataset_name]: opp / mex / mhealth / pamap2 / realdisp
+		[dataset_name]: pamap2 / opp / daphnet / uschad / skoda
 
 * As the size of the datasets is beyond the specified maximum size of code and data submission, all the datasets are not included in this repository. These publicly available datasets can be obtained from the UCI repository through the python script `dataset_download.py` as per the terminal command given below:
 
