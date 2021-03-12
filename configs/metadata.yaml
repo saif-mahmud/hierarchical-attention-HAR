@@ -3,32 +3,19 @@ data_dir:
   processed: data/processed
 
 data_src:
-  mex: https://archive.ics.uci.edu/ml/machine-learning-databases/00500/data.zip
   opp: https://archive.ics.uci.edu/ml/machine-learning-databases/00226/OpportunityUCIDataset.zip
   pamap2: https://archive.ics.uci.edu/ml/machine-learning-databases/00231/PAMAP2_Dataset.zip
-  realdisp: https://archive.ics.uci.edu/ml/machine-learning-databases/00305/realistic_sensor_displacement.zip
-  mhealth: https://archive.ics.uci.edu/ml/machine-learning-databases/00319/MHEALTHDATASET.zip
   skoda: http://har-dataset.org/lib/exe/fetch.php?media=wiki:dataset:skodaminicp:skodaminicp_2015_08.zip
+  uschad: http://sipi.usc.edu/had/USC-HAD.zip
+  daphnet: https://archive.ics.uci.edu/ml/machine-learning-databases/00245/dataset_fog_release.zip
 
 data_dest:
-  mex: mex.zip
   opp: opp.zip
   pamap2: pamap2.zip
-  realdisp: realdisp.zip
-  mhealth: mhealth.zip
   skoda: skoda.zip
+  uschad: USC-HAD.zip
+  daphnet: Daphnet.zip
 
-mex_preprocess:
-  data_dir: data/processed/clean_mex_data.csv
-  FEATURES: ['act_x', 'act_y', 'act_z','acw_x', 'acw_y', 'acw_z']
-  FEATURES_THIGH: ['act_x', 'act_y', 'act_z']
-  FEATURES_WRIST: ['acw_x', 'acw_y', 'acw_z']
-  LABELS: activity
-  NOVEL_CLASSES: [3, 6]
-  sliding_win_len: 2000
-  sliding_win_stride: 300
-  n_window: 10
-  n_timestep: 200
   
 opp_preprocess:
   file_list: ['S1-ADL1.dat', 'S1-ADL2.dat', 'S1-ADL3.dat', 'S1-ADL4.dat', 'S1-ADL5.dat',
@@ -50,23 +37,13 @@ opp_preprocess:
   loco_label_to_id: {'0': 0, '1': 1, '2': 2, '4': 3, '5': 4}
   mid_label_to_id: {'0': 0, '406516': 1, '406517': 2, '404516': 3, '404517': 4, '406520': 5, '404520': 6, '406505': 7, '404505': 8, '406519': 9, '404519': 10, '406511': 11, '404511': 12, '406508': 13, '404508': 14, '408512': 15, '407521': 16, '405506': 17}
 
-
-mhealth_preprocess:
-    columns_list: ['acc_chest_X', 'acc_chest_Y', 'acc_chest_Z','ecg_1', 'ecg_2','acc_la_X', 'acc_la_Y', 'acc_la_Z',
-           'gyr_la_X', 'gyr_la_Y', 'gyr_la_Z','mag_la_X', 'mag_la_Y', 'mag_la_Z','acc_RLA_X', 'acc_RLA_Y', 'acc_RLA_Z',
-           'gyr_RLA_X', 'gyr_RLA_Y', 'gyr_RLA_Z','mag_RLA_X', 'mag_RLA_Y', 'mag_RLA_Z', 'label']
-    feature_list: ['acc_chest_X', 'acc_chest_Y', 'acc_chest_Z','acc_la_X', 'acc_la_Y', 'acc_la_Z',
-           'gyr_la_X', 'gyr_la_Y', 'gyr_la_Z','mag_la_X', 'mag_la_Y', 'mag_la_Z',
-           'acc_RLA_X', 'acc_RLA_Y', 'acc_RLA_Z','gyr_RLA_X', 'gyr_RLA_Y', 'gyr_RLA_Z',
-           'mag_RLA_X', 'mag_RLA_Y', 'mag_RLA_Z']
-    sliding_win_len: 750
-    sliding_win_stride: 150
-    n_window: 15
-    n_timestep: 50
-    NOVEL_CLASSES: [1, 4, 8]
     
 daphnet_preprocess:
+    data_dir: 'data/processed/clean_daphnet_data.csv'
     feature_list: ['Ankle_acc_x', 'Ankle_acc_y', 'Ankle_acc_z', 'Thigh_acc_x','Thigh_acc_y', 'Thigh_acc_z', 'Trunk_acc_x', 'Trunk_acc_y','Trunk_acc_z']
+    label_column: 'Label'
+    benchmark_test_sub: 2
+    benchmark_val_sub: 9
     sliding_win_len: 320
     sliding_win_stride: 160
     n_window: 10
@@ -91,17 +68,6 @@ pamap2_preprocess:
   n_window: 15
   n_timestep: 100
   NOVEL_CLASSES: [2, 6, 11, 14]
-
-realdisp_preprocess:
-  data_dir: data/processed/clean_realdisp_data.csv
-  SENSOR_PLACEMENT: ['RLA', 'RUA', 'BACK', 'LUA', 'LLA', 'RC', 'RT', 'LT', 'LC']
-  SENSOR_LIST: ['ACC_X', 'ACC_Y', 'ACC_Z', 'GYR_X', 'GYR_Y', 'GYR_Z', 'MAG_X', 'MAG_Y', 'MAG_Z', 'QUAT_1', 'QUAT_2', 'QUAT_3', 'QUAT_4']
-  LABELS: 'LABEL'
-  NOVEL_CLASSES: [2, 8, 12, 16]
-  sliding_win_len: 750
-  sliding_win_stride: 250
-  n_window: 15
-  n_timestep: 50
 
 skoda_preprocess:
   sliding_win_len: 715
