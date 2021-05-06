@@ -6,8 +6,6 @@ import tensorflow as tf
 import yaml
 from sklearn.preprocessing import StandardScaler
 
-from preprocessing.mex_preprocess import get_mex_data
-from preprocessing.mhealth_preprocess import *
 from preprocessing.opp_preprocess import *
 from preprocessing.pamap2_preprocess import *
 from preprocessing.daphnet_preprocess import get_daphnet_data
@@ -90,55 +88,6 @@ def get_train_test_data(dataset, holdout=False):
         else:
             return (X_train, y_train),  (X_test, y_test)
 
-    elif dataset == 'mhealth':
-        metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)[
-            'mhealth_preprocess']
-        if not os.path.exists(os.path.join('data', 'raw', 'mhealth', 'MHEALTHDATASET')):
-            print(
-                'Please download the mhealth dataset from uci using the provided script')
-            return
-        df = prepare_mhealth_data()
-        if holdout:
-            NOVEL_CLASSES = metadata['NOVEL_CLASSES']
-            holdout_data = df.loc[df['label'].isin(NOVEL_CLASSES)]
-            novel_data = holdout_data.copy().reset_index(drop=True)
-
-            df = df.drop(holdout_data.copy().index)
-            df = df.reset_index(drop=True)
-
-        train_df = df[df['subject_id'] != 9]
-        test_df = df[df['subject_id'] == 9]
-
-        SLIDING_WINDOW_LENGTH = metadata['sliding_win_len']
-        SLIDING_WINDOW_STEP = metadata['sliding_win_stride']
-        N_WINDOW, N_TIMESTEP = metadata['n_window'], metadata['n_timestep']
-
-        FEATURES = metadata['feature_list']
-
-        X_train, y_train = create_windowed_dataset(
-            train_df, FEATURES, 'label', window_size=SLIDING_WINDOW_LENGTH, stride=SLIDING_WINDOW_STEP)
-        X_test, y_test = create_windowed_dataset(
-            test_df, FEATURES, 'label', window_size=SLIDING_WINDOW_LENGTH, stride=SLIDING_WINDOW_STEP)
-        if holdout:
-            X_holdout, y_holdout = create_windowed_dataset(
-                novel_data,  FEATURES, 'label', window_size=SLIDING_WINDOW_LENGTH, stride=SLIDING_WINDOW_STEP)
-            X_holdout = X_holdout.reshape(
-                (X_holdout.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
-            y_holdout = tf.keras.utils.to_categorical(y_holdout)
-
-        X_train = X_train.reshape(
-            (X_train.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
-        X_test = X_test.reshape(
-            (X_test.shape[0], N_WINDOW, N_TIMESTEP, len(FEATURES)))
-
-        y_train = tf.keras.utils.to_categorical(y_train)
-        y_test = tf.keras.utils.to_categorical(y_test)
-
-        if holdout:
-            return (X_train, y_train),  (X_test, y_test), (X_holdout, y_holdout)
-        else:
-            return (X_train, y_train),  (X_test, y_test)
-
     elif dataset == 'pamap2':
         metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)[
             'pamap2_preprocess']
@@ -192,67 +141,6 @@ def get_train_test_data(dataset, holdout=False):
             return (X_train, y_train),  (X_test, y_test), (X_holdout, y_holdout)
 
         return (X_train, y_train, y_train_mid), (None, None, None),  (X_test, y_test, y_test_mid)
-
-    elif dataset == 'mex':
-        metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)[
-            'mex_preprocess']
-
-        if os.path.exists(metadata['data_dir']):
-            df = pd.read_csv(metadata['data_dir'])
-        else:
-            df = get_mex_data()
-
-        FEATURES = metadata['FEATURES']
-        FEATURES_THIGH = metadata['FEATURES_THIGH']
-        FEATURES_WRIST = metadata['FEATURES_WRIST']
-        LABELS = metadata['LABELS']
-
-        NOVEL_CLASSES = metadata['NOVEL_CLASSES']
-
-        WINDOW_SIZE = metadata['sliding_win_len']
-        STRIDE = metadata['sliding_win_stride']
-
-        N_WINDOW = metadata['n_window']
-        N_TIMESTEP = metadata['n_timestep']
-
-        scaler = StandardScaler()
-        df[FEATURES] = scaler.fit_transform(df[FEATURES])
-
-        if holdout:
-            holdout_data = df.loc[df[LABELS].isin(NOVEL_CLASSES)]
-            novel_data = holdout_data.copy().reset_index(drop=True)
-
-            df = df.drop(holdout_data.copy().index)
-            df = df.reset_index(drop=True)
-
-            X_holdout, y_holdout = create_windowed_dataset(
-                novel_data, FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride=STRIDE)
-            X_holdout = X_holdout.reshape(
-                (X_holdout.shape[0], N_WINDOW, N_TIMESTEP, 6))
-            y_holdout = tf.keras.utils.to_categorical(y_holdout-1)
-
-        subjects = set(range(1, 31))
-        test_sub = set(range(11, 15))
-        train_sub = subjects - test_sub
-
-        train_df = df[df['subject_id'].isin(train_sub)]
-        test_df = df[df['subject_id'].isin(test_sub)]
-
-        X_train, y_train = create_windowed_dataset(
-            train_df, FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride=STRIDE)
-        X_test, y_test = create_windowed_dataset(
-            test_df, FEATURES, class_label=LABELS, window_size=WINDOW_SIZE, stride=STRIDE)
-
-        X_train = X_train.reshape((X_train.shape[0], N_WINDOW, N_TIMESTEP, 6))
-        X_test = X_test.reshape((X_test.shape[0], N_WINDOW, N_TIMESTEP, 6))
-
-        y_train = tf.keras.utils.to_categorical(y_train-1)
-        y_test = tf.keras.utils.to_categorical(y_test-1)
-
-        if holdout:
-            return (X_train, y_train),  (X_test, y_test), (X_holdout, y_holdout)
-        else:
-            return (X_train, y_train),  (X_test, y_test)
 
     elif dataset == 'daphnet':
         metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)['daphnet_preprocess']
