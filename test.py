@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 import sys
@@ -26,27 +27,21 @@ hyperparameters = yaml.load(hparam_file, Loader=yaml.FullLoader)
 
 metadata_file = open('configs/metadata.yaml', mode='r')
 
-dataset = str(sys.argv[1])
-try:
-    arg2 = str(sys.argv[2])
-except IndexError:
-    arg2 = None
-try:
-    arg3 = str(sys.argv[3])
-except IndexError:
-    arg3 = None
-try:
-    arg4 = str(sys.argv[4])
-except IndexError:
-    arg4 = None
+def parse_args():
+    parser = argparse.ArgumentParser(description='Hierarchical Self Attention Based Autoencoder for Open-Set Human Activity Recognition')
+    parser.add_argument('--dataset', '-D', default='daphnet', help='Dataset name- options: opp, pamap2, daphhet, skoda')
+    parser.add_argument('--use_pretrained', action='store_true', default=False, help='Use pretrained model')
+    parser.add_argument('--include_openset_exp', action='store_true', default=False, help='Perform Openset Recognition')
+    parser.add_argument('--save_weights', action='store_true', default=False, help='Save model parameters')
+    return parser.parse_args()
 
 
-def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
+def test_hsa_model(dataset, use_pretrained=False, include_openset_exp=False, save_weights=False):
     print(tabulate([['Hierarchical Self Attention Based Autoencoder for Open-Set Human Activity Recognition']], [
     ], tablefmt="fancy_grid"))
     print('[PREPROCESSING AND LOADING DATA] ...')
-    if (arg2 == 'use_pretrained') or (arg3 == 'use_pretrained') or (arg4 == 'use_pretrained'):
-        if (arg2 == 'include_novelty_exp') or (arg3 == 'include_novelty_exp') or (arg4 == 'include_novelty_exp'):
+    if use_pretrained and include_openset_exp:
+        if (arg2 == '') or (arg3 == 'include_novelty_exp') or (arg4 == 'include_novelty_exp'):
             print('Novelty experiment using pretrained weights is not currently supported. Please conduct novelty experiment with model training.')
             return
         else:
@@ -64,7 +59,7 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
             # if
             # model_hsa.load
     else:
-        if (arg2 == 'include_novelty_exp') or (arg3 == 'include_novelty_exp') or (arg4 == 'include_novelty_exp'):
+        if include_openset_exp:
             (X_train, y_train),  (X_test, y_test), (X_holdout,
                                                     y_holdout) = get_train_test_data(dataset=dataset, holdout=True)
             model_hsa, model_vae = train_model(
@@ -72,13 +67,13 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
         else:
             (X_train, y_train, y_train_mid), (X_val, y_val, y_val_mid), (X_test, y_test, y_test_mid) = get_train_test_data(
                 dataset=dataset, holdout=False)
-            if X_val == None:
+            if X_val is None:
                 val_data = None
             else:
                 val_data = (X_val, y_val, y_val_mid)
             model_hsa = train_model(dataset, (X_train, y_train, y_train_mid),  val_data=val_data)
 
-    if (arg2 == 'save_weights') or (arg3 == 'save_weights') or (arg4 == 'save_weights'):
+    if save_weights:
         if not os.path.exists(os.path.join('saved_models', dataset)):
             os.mkdir(os.path.join('saved_models', dataset))
         model_hsa.save_weights(os.path.join('saved_models', dataset, dataset))
@@ -89,7 +84,7 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
     activity_map = json.load(
         open(os.path.join('data', 'activity_maps', dataset + '_activity.json')))
 
-    if(arg2 == 'include_novelty_exp') or (arg3 == 'include_novelty_exp') or (arg4 == 'include_novelty_exp'):
+    if include_openset_exp:
         metadata = yaml.load(metadata_file, Loader=yaml.FullLoader)[
             dataset + '_preprocess']
         NOVEL_CLASSES = metadata['NOVEL_CLASSES']
@@ -101,7 +96,7 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
     activity_names = list(activity_map.values())
     print("Window level:")
     print(classification_report(np.argmax(y_test_mid.reshape(-1, 2), axis=1), np.argmax(pred_mid.reshape(-1, 2), axis=1), labels=range(len(activity_names)), target_names=activity_names, zero_division=1))
-    confm = confusion_matrix(np.argmax(y_test_mid.reshape(-1, 19), axis=1), np.argmax(pred_mid.reshape(-1, 19), axis=1), labels=range(len(activity_names)))
+    confm = confusion_matrix(np.argmax(y_test_mid.reshape(-1, y_test.shape[1]), axis=1), np.argmax(pred_mid.reshape(-1, y_test.shape[1]), axis=1), labels=range(len(activity_names)))
     print(confm)
 
     print("Session level:")
@@ -121,9 +116,11 @@ def test_hsa_model(dataset, arg2=None, arg3=None, arg4=None):
     out_fig = dataset + '_confusion_matrix.png'
     plt.savefig(os.path.join('result', out_fig))
 
-    if(arg2 == 'include_novelty_exp') or (arg3 == 'include_novelty_exp') or (arg4 == 'include_novelty_exp'):
+    if include_openset_exp:
         novelty_detection_exp(model_hsa, model_vae, X_train, X_test, X_holdout)
 
 
 if __name__ == "__main__":
-    test_hsa_model(dataset, arg2, arg3, arg4)
+    args = parse_args()
+    print(args)
+    test_hsa_model(args.dataset, use_pretrained=args.use_pretrained, save_weights=args.save_weights, include_openset_exp=args.include_openset_exp)
